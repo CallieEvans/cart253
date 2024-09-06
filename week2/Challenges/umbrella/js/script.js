@@ -26,8 +26,9 @@ function draw() {
    background('red');
 
    drawUmbrellaCover();
-   drawUmbrellaHandle();
    drawUmbrellaNeg();
+   drawUmbrellaHandle();
+  
 
 
 }
@@ -37,9 +38,9 @@ function draw() {
 */
 function drawUmbrellaCover(){
     push();
-    Fill('blue');
+    fill('blue');
     noStroke();
-    ellipse(320,320, 450);
+    arc(320, 300, 450, 450, 355, 0);
     pop();
 }
 
@@ -50,9 +51,11 @@ function drawUmbrellaCover(){
 function drawUmbrellaHandle(){
     push();
     noFill();
-    noStroke('#00');
-    ellipse(230,250, 60, 110);
-    ellipse(400,250, 60, 110);
+    stroke('#000');
+    strokeWeight(20);
+    line(320, 210, 320, 500);
+    stroke('yellow');
+    arc(360, 500, 80, 120, 364.4, 9.5 , OPEN);
     pop();
 }
 
@@ -60,9 +63,11 @@ function drawUmbrellaHandle(){
  * Creat the the negative space
 */
 function drawUmbrellaNeg(){
-     push();
-    Fill('red');
-    ellipse(400,250, 60, 110);
-
+    push();
+    fill('red');
+    noStroke();
+    ellipse(320,300, 150);
+    ellipse(170,300, 150);
+    ellipse(470,300, 150);
     pop();
 }
