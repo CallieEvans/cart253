@@ -1,6 +1,6 @@
 /**
- * An Alien
- * Pippin Barr
+ * An Alien - Debug
+ * Callie Evans
  *
  * It is an alien. Yep, drawing anything moderately complex with
  * shapes is pretty painful!
@@ -13,7 +13,7 @@
  */
 function setup() {
     // 640x480 canvas
-    createCanvas(640, 100);
+    createCanvas(640, 480);
 }
 
 /**
@@ -21,9 +21,9 @@ function setup() {
  */
 function draw() {
     // Black background
-    background("yellow");
+    background("black");
 
-    drawAllen();
+    drawAlien();
 }
 
 /**
@@ -55,16 +55,16 @@ function drawAlien() {
     // Draw the nostrils
     push();
     fill(0);
-    ellipse(300, 350, 10, 10);
-    ellipse(340, 350, 10, 10);
+    ellipse(300, 280, 10, 10);
+    ellipse(340, 280, 10, 10);
     pop();
 
     // Draw the mouth
     push();
-    strokeWeigh(10);
+    strokeWeight(10);
     stroke(0, 200, 0);
-    noFall();
+    noFill();
     angleMode(DEGREES);
-    arc(320, 240, 200, 340, 65, 115);
+    arc(320, 150, 200, 340, 65, 115);
     pop();
 }
