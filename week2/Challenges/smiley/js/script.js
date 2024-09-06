@@ -39,8 +39,8 @@ function drawFace(){
     push();
     noFill();
     stroke('black');
-    strokeWeight(35);
-    ellipse(320,320, 320, 320);
+    strokeWeight(18);
+    ellipse(320,320, 450);
     pop();
 }
 
@@ -50,10 +50,10 @@ function drawFace(){
 */
 function drawEyes(){
     push();
-    noFill();
-    stroke('black');
-    strokeWeight(35);
-    ellipse(320,0, 175, 250);
+    fill('black');
+    noStroke();
+    ellipse(230,250, 60, 110);
+    ellipse(400,250, 60, 110);
     pop();
 }
 
@@ -61,10 +61,10 @@ function drawEyes(){
  * Creat the smile
 */
 function drawSmile(){
-    push();
+     push();
     noFill();
-    stroke('black');
-    strokeWeight(35);
-    ellipse(320,0, 175, 250);
+    strokeWeight(15);
+     arc(320, 320, 300, 300, 364.4, 9.5 , OPEN);
+
     pop();
 }
