@@ -22,16 +22,15 @@ function setup() {
  * Draws a house
  */
 function draw() {
-    // The sky
-    background(150, 200, 250);
+   drawSky();
 
    drawCloud();
 
-   drawGroumd();
+   drawGround();
 
-    drawHouse();
+   drawHouse();
 
-    drawSky();
+  
 
 
   
@@ -76,19 +75,14 @@ function drawHouse(){
     drawHouseDoor();
     drawHouseWindow();
 
-
 }
 
 /**
   * Draws the blue sky
   */
 function drawSky(){
-    // The main body of the house
-    push();
-    noStroke();
-    fill(250, 250, 200);
-    rect(200, 240, 280, 180);
-    pop();
+    // The sky
+    background(150, 200, 250);
  
  }
 
