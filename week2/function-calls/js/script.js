@@ -1,24 +1,29 @@
 /**
- * Title of Project
- * Author Name
+ * Function Calls
+ * Callie Evans
  * 
- * HOW EMBARRASSING! I HAVE NO DESCRIPTION OF MY PROJECT!
- * PLEASE REMOVE A GRADE FROM MY WORK IF IT'S GRADED!
+ * Function calls demo material
+ * 
  */
 
 "use strict";
 
 /**
- * OH LOOK I DIDN'T DESCRIBE SETUP!!
+ * Happens at the beginning of the program
 */
 function setup() {
+    //p5 function
+createCanvas(640, 480);
 
 }
 
 
 /**
- * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
+ * Loops at every frame that our program runs
 */
 function draw() {
+    background(150,200,210);
+    rect(20,20,400,50);
+
 
 }
