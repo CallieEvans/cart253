@@ -1,8 +1,8 @@
 /**
- * Function Calls
+ * Writers block
  * Callie Evans
  * 
- * Function calls demo material
+ * A representation of a blank bar before typing on the screem
  * 
  */
 
@@ -10,9 +10,11 @@
 
 /**
  * Happens at the beginning of the program
+ * We created a canva for our project
 */
 function setup() {
     //p5 function
+    
 createCanvas(640, 480);
 
 }
@@ -20,10 +22,13 @@ createCanvas(640, 480);
 
 /**
  * Loops at every frame that our program runs
+ * Draws out the graphics, the rectangle and text section
 */
 function draw() {
+    //Blue background
     background(150,200,210);
-    rect(20,20,400,50);
+    //Creates the empty text block
+    rect(20,20,460,50);
 
 
 }
