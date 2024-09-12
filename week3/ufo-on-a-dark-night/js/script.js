@@ -1,6 +1,6 @@
 /**
  * UFO on a Dark Night
- * Pippin Barr
+ * Pippin Barr // Callie Evans
  * 
  * A UFO. On a dark night. It just sits there?
  */
@@ -35,6 +35,19 @@ function setup() {
 function draw() {
     // Display the sky
     background(skyShade);
+    // change bg shade / sky
+    skyShade = skyShade + 1;
+
+    //change ufo location
+    ufo.x = ufo.x + .5;
+    ufo.y = ufo.y - 2
+
+    //change fill
+    ufo.fill = ufo.fill *.98;
+    //change shape 
+    ufo.width = ufo.width / 1.005;
+    ufo.height = ufo.height / 1.005;
+
 
     // Draw the UFO based on its properties
     push();
