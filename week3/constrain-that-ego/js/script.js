@@ -11,6 +11,8 @@
 let ego = {
     x: 200,
     y: 200,
+    minSize: 0,
+    maxSize: 400,
     size: 1,
     fill: 200
 };
@@ -34,6 +36,8 @@ function draw() {
     ego.fill = ego.fill - 0.5;
     // Size gets bigger, symbolizing taking up emotional space
     ego.size = ego.size + 1;
+    //constraining the size
+    ego.size = constrain(ego.size, ego.minSize, ego.maxSize);
 
     // Draw the ego
     push();
