@@ -78,6 +78,12 @@ let bird = {
   }
 
 };
+let shakeValue = {
+    incre: 200,
+    minInc: 200.5,
+    maxInc:220
+
+};
 
 /**
  * Create the canvas
@@ -89,6 +95,7 @@ function setup() {
 /**
  * Draw (and update) Mr. Furious and change day to night
  */
+
 function draw() {
   //Make sky
   skyNight();
@@ -96,8 +103,13 @@ function draw() {
 
   mrFuriousColours();
   //shake mr furous
-  let xShake = random(200, 205);
-  let yShake = random(200, 205);
+
+    //constrain his shake
+
+  shakeValue.incre = shakeValue.incre + .025;
+  shakeValue.incre =  constrain(shakeValue.incre, shakeValue.minInc, shakeValue.maxInc);
+  let xShake = random(200, shakeValue.incre);
+  let yShake = random(200, shakeValue.incre);
 
   // Draw Mr. Furious as a coloured circle
   push();
@@ -120,6 +132,12 @@ function draw() {
 
 
 }
+/**
+ * Constrain the shake
+ */
+// function shakeFurious(){
+// shakeValue = shakeValue + 1;
+// }
 
 /**
  * Make bird fly
