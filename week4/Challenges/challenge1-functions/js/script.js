@@ -13,6 +13,17 @@ const puck = {
   fill: "#ff0000"
 };
 
+const target = {
+  x: 150,
+  y: 150,
+  size: 100,
+  fill: 'gray',
+  fills: {
+    static: 'gray',
+    targeted: '#6et949'   
+  }
+};
+
 const user = {
   x: undefined, // will be mouseX
   y: undefined, // will be mouseY
@@ -36,10 +47,15 @@ function draw() {
   // Move user circle
   moveUser();
   
-  // Draw the user and puck
+  // Draw the user and puck and target
+  drawTarget();
   drawUser();
   drawPuck();
+  //checks if puck and user overlaps and makes it move
   moveTarget();
+  
+  //checks if puck overlaps the target
+  checkPuck();
 }
 
 /**
@@ -73,6 +89,17 @@ function drawPuck() {
 }
 
 /**
+ * Displays the target
+ */
+function drawTarget() {
+  push();
+  noStroke();
+  fill(target.fill);
+  ellipse(target.x, target.y,target.size);
+  pop();
+}
+
+/**
  * Sets the user position to the mouse position
  */
 function moveTarget() {
@@ -95,4 +122,19 @@ function moveTarget() {
     }
     
     
+}
+
+/**
+ * Displays the target
+ */
+function checkPuck() {
+    //Check if the puck and target circles overlap
+    const targetDistance = dist(puck.x, puck.y, target.x, target.y);
+    const puckIsOverlapping = (targetDistance < puck.size / 2);
+    if (puckIsOverlapping) {
+        target.fill = target.fills.targeted;
+    } else {
+        target.fill = target.fills.static;
+    }
+ 
 }
