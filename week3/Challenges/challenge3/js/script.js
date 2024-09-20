@@ -27,7 +27,8 @@ let mrFurious = {
     maxColours: {
     g: 225,
     b: 225
-    }
+  },
+  shakeValue: 0
 };
 
 //The sky
@@ -78,12 +79,14 @@ let bird = {
   }
 
 };
-let shakeValue = {
-    incre: 200,
-    minInc: 200.5,
-    maxInc:220
 
-};
+//Mr furious shake values
+// let shakeValue = {
+//     incre: 200,
+//     minInc: 200.5,
+//     maxInc:220
+
+// };
 
 /**
  * Create the canvas
@@ -106,16 +109,22 @@ function draw() {
 
     //constrain his shake
 
-  shakeValue.incre = shakeValue.incre + .025;
-  shakeValue.incre =  constrain(shakeValue.incre, shakeValue.minInc, shakeValue.maxInc);
-  let xShake = random(200, shakeValue.incre);
-  let yShake = random(200, shakeValue.incre);
+  // shakeValue.incre = shakeValue.incre + .025;
+  // shakeValue.incre =  constrain(shakeValue.incre, shakeValue.minInc, shakeValue.maxInc);
+  // let xShake = random(200, shakeValue.incre);
+  // let yShake = random(200, shakeValue.incre);
+  
+  //shake mr furious
+  mrFurious.shakeValue += .1;
+  mrFurious.shakeValue = constrain(mrFurious.shakeValue, 0, 5);
+  const x = mrFurious.x + random(-mrFurious.shakeValue, mrFurious.shakeValue);
+  const y = mrFurious.y + random(-mrFurious.shakeValue, mrFurious.shakeValue);
 
   // Draw Mr. Furious as a coloured circle
   push();
   noStroke();
   fill(mrFurious.fill.r, mrFurious.fill.g, mrFurious.fill.b);
-  ellipse(xShake, yShake, mrFurious.size);
+  ellipse(x, y, mrFurious.size);
   pop();
 
   //Make bird fly
@@ -127,17 +136,9 @@ function draw() {
   fill(bird.fill.r, bird.fill.g, bird.fill.b);
   ellipse(bird.x, bird.y, bird.size);
   pop();
-
-
-
+  
 
 }
-/**
- * Constrain the shake
- */
-// function shakeFurious(){
-// shakeValue = shakeValue + 1;
-// }
 
 /**
  * Make bird fly
@@ -158,14 +159,12 @@ function draw() {
  * Make day turn to night
  */
 function skyNight(){
-  sky.r = sky.r - 1;
-  sky.g = sky.g - 1;
-  sky.b = sky.b - 1;
+  sky.r -= 1;
+  sky.g -= 1;
+  sky.b -= 1;
   sky.r = constrain(sky.r, sky.minColours.r, sky.maxColours.r);
   sky.g = constrain(sky.g, sky.minColours.g, sky.maxColours.g);
   sky.b = constrain(sky.b, sky.minColours.b, sky.maxColours.b);
-
-
 }
 
 /**
@@ -173,8 +172,8 @@ function skyNight(){
  */
 function mrFuriousColours(){
   mrFurious.fill.g = mrFurious.fill.g - 1;
-  mrFurious.fill.b = mrFurious.fill.b - 1;
   mrFurious.fill.g = constrain(mrFurious.fill.g, mrFurious.minColours.g, mrFurious.maxColours.g);
+  mrFurious.fill.b = mrFurious.fill.b - 1;
   mrFurious.fill.b = constrain(mrFurious.fill.b, mrFurious.minColours.b, mrFurious.maxColours.b);
 
 
