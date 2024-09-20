@@ -1,6 +1,6 @@
 /**
  * Death by Boredom
- * Pippin Barr
+ * Callied Evans
  * 
  * A creature that can die of boredom...
  */
