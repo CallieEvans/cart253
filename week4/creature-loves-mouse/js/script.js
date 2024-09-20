@@ -1,6 +1,6 @@
 /**
  * Creature Loves Mouse
- * Pippin Barr
+ * Callie Evans
  * 
  * A creature that responds to the mouse by changing colour
  */
@@ -42,13 +42,25 @@ function draw() {
 
     checkInput();
     drawCreature();
-}
+} 
 
 /**
  * Responds to user input
  */
 function checkInput() {
-    // We'll need to figure this out
+    // check is mosue is pressed
+    if (mouseIsPressed) {
+        //if it is creature is happy
+        creature.fill = creature.fills.happy;
+    } else if (keyIsPressed) {
+         //if it is creature is angry
+        creature.fill = creature.fills.angry;
+        
+    } else {
+        //if mouse and key arent pressed back to bored
+        creature.fill = creature.fills.bored;
+        
+    };
 }
 
 /**
