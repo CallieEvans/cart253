@@ -12,6 +12,8 @@
 let bucket = {
     x: 280,
     y: 509,
+    height: 90,
+    width:70,
     fill: {
         bucketStroke: '#707070',
         bucketFill: '#ededed',
@@ -36,8 +38,12 @@ let tears = {
     y: eye.y,
     x: eye.x,
     fill: 'lightblue',
+    size: 20,
     // timeOut: 0,
     // counter: 0,
+}
+let bucketReserve = {
+    height: 20,
 }
 
 /**
@@ -61,9 +67,10 @@ function setup() {
 function draw() {
     //Draw a blue sky that changes with emotion
     background(120, 150, 200);
-    
     //Draw our bucket
     drawBucket();
+    //draw bucket reserve
+    drawBucketReserve();
     //move the bucket with mouseX
     moveBucket();
     //Draw the tears
@@ -72,6 +79,9 @@ function draw() {
     drawEye();
     //Randomly move the eye
     moveEye();
+    //fill up bucket
+    fillBucket();
+    
     
 
 }
@@ -84,14 +94,26 @@ function drawBucket() {
     fill(bucket.fill.bucketFill);
     stroke(bucket.fill.bucketStroke);
     strokeWeight(2);
-    rect(bucket.x, bucket.y, 70, 90);
+    rect(bucket.x, bucket.y, bucket.width, bucket.height);
     pop();
     
     //draw inside of bucket
     push();
     fill(bucket.fill.bucketFillInner);
     noStroke();
-    rect(bucket.x+10, bucket.y+1, 50, 80);
+    rect(bucket.x + 10, bucket.y + 1, bucket.width -20, bucket.height-10);
+    pop();
+}
+
+/**
+ * Draw bucket water reserve
+*/
+function drawBucketReserve() {
+    //draw inside of bucket
+    push();
+    fill('blue');
+    noStroke();
+    rect(bucket.x + 10, height - (bucketReserve.height + 10), bucket.width - 20, bucketReserve.height);
     pop();
 }
 
@@ -105,14 +127,6 @@ function moveBucket() {
     bucket.x = mouseX;
     //Constrain bucket movement
     bucket.x = constrain(bucket.x ,1, 529);
-    
-    // if (keyIsDown(LEFT_ARROW) === true) {
-    //     bucket.x -= 4;
-    // }
-    // //Move bucket to the right
-    // if (keyIsDown(RIGHT_ARROW) === true) {
-    //     bucket.x += 4;
-    // }
 
 }
 
@@ -167,10 +181,10 @@ function moveEye() {
         eye.dTimeOut;
     }
     //reversing the x velocity
-    if (eye.x < 0 || eye.x > width) {
+    if (eye.x < 0 + 80 || eye.x > width- 80) {
         eye.velocityX = -eye.velocityX ;
     }
-    if (eye.y < 0 || eye.y > height / 2) {
+    if (eye.y < 0 + 35 || eye.y > height / 2) {
         eye.velocityY = -eye.velocityY ;
     }
     eye.x += eye.velocityX;
@@ -187,24 +201,22 @@ function drawTear() {
     push();
     fill(tears.fill);
     noStroke();
-    ellipse(tears.x, tears.y, 20);
+    ellipse(tears.x, tears.y, tears.size);
     pop();
     if (tears.y > height) {
         tears.y = eye.y;
         tears.x = eye.x;
     }
+}
+function fillBucket() {
+    //const targetDistance = dist(bucket.x, bucket.y, tears.x, tears.y);
+    const tearInBucketY = (tears.y > bucket.y);
+    // check if the tear in in the bucket on x
+    const tearInBucketX = (tears.x > 0 + bucket.x && tears.x < bucket.x + bucket.width);
 
+    if (tearInBucketY && tearInBucketX) {
+        console.log('this is true');
+    }
 }
 
-// function drawTears() {
-//     // for (let i = 0; i < 25; i += 1) {}
-//     if (tears.counter < tears.timeOut) {
-//        tears.counter++;
-//     } else {
-//         drawTear();
-//         tears.counter = 0;
-//         tears.timeOut = random(10,20);
-//     }
-    
-// }
 
