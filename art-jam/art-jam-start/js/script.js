@@ -2,7 +2,7 @@
  * Crying Buckets
  * Callie Evans
  * 
- * This program contains a fly eye that cries tears. 
+ * This program contains a flying eye that cries tears. 
  * The user must use a bucket and left/right arrow keys to catch the tears 
  * and fill up the bucket. There is a percentage counter to track the progress
  */
@@ -25,12 +25,19 @@ let eye = {
         iris:'#20444f',
         eyeFill:'white',
         stroke:'black'
-    }
+    },
+    velocityX: 0,
+    velocityY: 2,
+    dCounter: 0,
+    dTimeOut: 0,
 }
 
 let tears = {
     y: eye.y,
+    x: eye.x,
     fill: 'lightblue',
+    // timeOut: 0,
+    // counter: 0,
 }
 
 /**
@@ -38,6 +45,11 @@ let tears = {
 */
 function setup() {
     createCanvas(600, 600);
+    
+    //Timeout for counter
+    let timeOut = random(50, 100);
+    eye.dTimeOut = timeOut;
+    // tears.timeOut = random(10,20);
     
 
 }
@@ -55,11 +67,11 @@ function draw() {
     //move the bucket with mouseX
     moveBucket();
     //Draw the tears
-    drawTears();
+    drawTear();
     //Draw the eye
     drawEye();
     //Randomly move the eye
-    //moveEye();
+    moveEye();
     
 
 }
@@ -142,10 +154,29 @@ function drawEye() {
 /**
  * Randomly move eye
 */
-// function moveEye() { 
-//     eye.x = random(100, 500);
-//     eye.y = random(50,300);
-// }
+function moveEye() { 
+    // eye.x = random(100, 500);
+    // eye.y = random(50,300);
+    // Set counter and randomize velocity e.i x and y
+    if (eye.dCounter < eye.dTimeOut) {
+        eye.dCounter++;
+    } else {
+        eye.velocityX = random(-5, 5);
+        eye.velocityY = random(-5, 5);
+        eye.dCounter = 0;
+        eye.dTimeOut;
+    }
+    //reversing the x velocity
+    if (eye.x < 0 || eye.x > width) {
+        eye.velocityX = -eye.velocityX ;
+    }
+    if (eye.y < 0 || eye.y > height / 2) {
+        eye.velocityY = -eye.velocityY ;
+    }
+    eye.x += eye.velocityX;
+    eye.y += eye.velocityY;
+    
+}
 
 /**
  * Draw the tears
@@ -156,14 +187,24 @@ function drawTear() {
     push();
     fill(tears.fill);
     noStroke();
-    ellipse(eye.x, tears.y, 20);
+    ellipse(tears.x, tears.y, 20);
     pop();
+    if (tears.y > height) {
+        tears.y = eye.y;
+        tears.x = eye.x;
+    }
 
 }
 
-function drawTears() {
-     for (let i = 0; i < 25; i += 1) {
-     drawTear();
-  }
-}
+// function drawTears() {
+//     // for (let i = 0; i < 25; i += 1) {}
+//     if (tears.counter < tears.timeOut) {
+//        tears.counter++;
+//     } else {
+//         drawTear();
+//         tears.counter = 0;
+//         tears.timeOut = random(10,20);
+//     }
+    
+// }
 

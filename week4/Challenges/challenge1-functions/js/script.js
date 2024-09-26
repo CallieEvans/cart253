@@ -13,6 +13,13 @@ const puck = {
   fill: "#ff0000"
 };
 
+const user = {
+  x: undefined, // will be mouseX
+  y: undefined, // will be mouseY
+  size: 75,
+  fill: "#000000"
+};
+
 const target = {
   x: 150,
   y: 150,
@@ -24,18 +31,15 @@ const target = {
   }
 };
 
-const user = {
-  x: undefined, // will be mouseX
-  y: undefined, // will be mouseY
-  size: 75,
-  fill: "#000000"
-};
 
 /**
  * Create the canvas
  */
 function setup() {
   createCanvas(400, 400);
+  
+  //removes the cursor visually
+  noCursor();
 }
 
 /**
@@ -46,13 +50,13 @@ function draw() {
   
   // Move user circle
   moveUser();
+   //checks if puck and user overlaps and makes it move
+  moveTarget();
   
   // Draw the user and puck and target
   drawTarget();
   drawUser();
   drawPuck();
-  //checks if puck and user overlaps and makes it move
-  moveTarget();
   
   //checks if puck overlaps the target
   checkPuck();
@@ -62,8 +66,68 @@ function draw() {
  * Sets the user position to the mouse position
  */
 function moveUser() {
+  
+  // draw this indirectly so it doesn't just draw the circle at mousex but its location is = mousex
   user.x = mouseX;
   user.y = mouseY;
+}
+
+/**
+ * Sets the user position to the mouse position
+ */
+function moveTarget() {
+    //Check if the user and target circles overlap
+  const puckDistance = dist(user.x, user.y, puck.x, puck.y);
+  //check the furtherest apart they can be (the edges) : (puckDistance < puck.size/2); 
+  //isn't the farthest to get the farthest its: puckDistance < user.size / 2 + puck.size/2
+  const tagretIsOverlapping = (puckDistance < user.size / 2 + puck.size / 2);
+    
+    //If so, it should calculate the distance between the user and the target on x and y separately
+  if (tagretIsOverlapping) {
+    // Why are we using constances? 
+    //Let means we could change the variables, const means we won't later try and change them & to let you know you shouldn't
+    const distanceX = user.x - puck.x;
+    const distanceY = user.y - puck.y;
+    //Then it should move the target 1 pixel away from the user along the dimension the user is closest on. 
+    //(e.g.if the user is closest to the puck on the x - axis, then the puck should move away from the user on the x - axis)
+      
+    //To fix the direction you are pushing the circle
+        
+    if (abs(distanceX) > abs(distanceY)) {
+      //It is now closer on x
+      if (distanceX < 0) {
+        //check if x distance is negative
+        puck.x += 5;
+                
+      } else if (distanceX > 0) {
+        puck.x -= 5;
+            
+      }
+   
+      } else 
+        if (distanceY < 0) {
+          //check if x distance is negative
+          puck.y += 5;
+                  
+        } else if (distanceY > 0) {
+          puck.y -= 5;
+              
+
+      }
+  }
+    
+    
+}
+
+/**
+ * Displays the target
+ */
+function drawTarget() {
+  push();
+  noStroke();
+  fill(target.fill);
+  ellipse(target.x, target.y,target.size);
+  pop();
 }
 
 /**
@@ -88,41 +152,6 @@ function drawPuck() {
   pop();
 }
 
-/**
- * Displays the target
- */
-function drawTarget() {
-  push();
-  noStroke();
-  fill(target.fill);
-  ellipse(target.x, target.y,target.size);
-  pop();
-}
-
-/**
- * Sets the user position to the mouse position
- */
-function moveTarget() {
-    //Check if the user and target circles overlap
-    const puckDistance = dist(user.x, user.y, puck.x, puck.y);
-    const tagretIsOverlapping = (puckDistance < puck.size / 2);
-    
-    //If so, it should calculate the distance between the user and the target on x and y separately
-    if (tagretIsOverlapping) {
-        const distanceX = user.x - puck.x;
-        const distanceY = user.y - puck.y;
-        //Then it should move the target 1 pixel away from the user along the dimension the user is closest on. 
-        //(e.g.if the user is closest to the puck on the x - axis, then the puck should move away from the user on the x - axis)
-        if (distanceX > distanceY){ 
-            puck.x -= 1;
-        } else if(distanceX < distanceY) {
-            puck.y -= 1;
-         }
-   
-    }
-    
-    
-}
 
 /**
  * Displays the target
@@ -130,7 +159,7 @@ function moveTarget() {
 function checkPuck() {
     //Check if the puck and target circles overlap
     const targetDistance = dist(puck.x, puck.y, target.x, target.y);
-    const puckIsOverlapping = (targetDistance < puck.size / 2);
+    const puckIsOverlapping = (targetDistance < target.size / 2 + puck.size / 2);
     if (puckIsOverlapping) {
         target.fill = target.fills.targeted;
     } else {
