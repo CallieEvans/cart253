@@ -22,6 +22,10 @@ function setup() {
     window.addEventListener('keydown', gameOverTrue);
     window.addEventListener("visibilitychange", gameOverTrue);
     window.addEventListener("offline", gameOverTrue);
+    window.addEventListener("mousedown", gameOverTrue);
+    window.addEventListener("mouse", gameOverTrue);
+    window.addEventListener("wheel", gameOverTrue);
+
 
 }
 
@@ -72,11 +76,4 @@ function gameOverTrue(event){
         gameOver = true;
     }
     
-}
-function mouseMoved(event) {
-        gameOver = true;
-}
-
-function mouseWheel(event) {
-        gameOver = true;
 }
