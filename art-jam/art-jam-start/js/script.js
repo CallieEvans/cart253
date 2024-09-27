@@ -23,14 +23,14 @@
 "use strict";
 let bgColours = {
      colors: {
-        r: 225,
-        g: 232,
-        b: 235
+        r: 190,
+        g: 200,
+        b: 205
     },
     colorsSpeed: {
-        r: .3,
-        g: .2,
-        b: .15
+        r: .25,
+        g: .15,
+        b: .1
     },
     
 }
@@ -64,7 +64,7 @@ let tears = {
     x: eye.x,
     fill: 'lightblue',
     size: 20,
-    velocity:8,
+    velocity:9,
 
 }
 
