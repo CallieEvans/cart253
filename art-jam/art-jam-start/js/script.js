@@ -5,10 +5,35 @@
  * This program contains a flying eye that cries tears. 
  * The user must use a bucket and left/right arrow keys to catch the tears 
  * and fill up the bucket. There is a percentage counter to track the progress
+ * 
+ * To do list:
+ * clean up code
+ * organize it
+ * add comments
+ * add in states for an game over screen
+ * 
+ * If have time:
+ * add function to loose percentage is you cant catch a tear
+ * add a timeout, if the backgrounds reach their limits before you completely fill bucket, its game over
+ * 
+ * if reallyyyy have time, add another eye
  */
 
-"use strict";
 
+"use strict";
+let bgColours = {
+     colors: {
+        r: 225,
+        g: 232,
+        b: 235
+    },
+    colorsSpeed: {
+        r: .3,
+        g: .2,
+        b: .15
+    },
+    
+}
 let bucket = {
     x: 280,
     y: 509,
@@ -28,7 +53,7 @@ let eye = {
         eyeFill:'white',
         stroke:'black'
     },
-    velocityX: 0,
+    velocityX: 2,
     velocityY: 2,
     dCounter: 0,
     dTimeOut: 0,
@@ -39,11 +64,14 @@ let tears = {
     x: eye.x,
     fill: 'lightblue',
     size: 20,
-    // timeOut: 0,
-    // counter: 0,
+    velocity:8,
+
 }
+
 let bucketReserve = {
-    height: 20,
+    height: 0,
+    fill: 2,
+    colors: '#659db5'
 }
 
 /**
@@ -56,7 +84,7 @@ function setup() {
     let timeOut = random(50, 100);
     eye.dTimeOut = timeOut;
     // tears.timeOut = random(10,20);
-    
+    bucketReserve.height;
 
 }
 
@@ -66,21 +94,33 @@ function setup() {
 */
 function draw() {
     //Draw a blue sky that changes with emotion
-    background(120, 150, 200);
+    background(bgColours.colors.r, bgColours.colors.g, bgColours.colors.b);
+    
+    bgColours.colors.r -= bgColours.colorsSpeed.r;
+    bgColours.colors.g -= bgColours.colorsSpeed.g;
+    bgColours.colors.b -= bgColours.colorsSpeed.b;
+    
+    bgColours.colors.r = constrain(bgColours.colors.r, 12, 255);
+    bgColours.colors.g = constrain(bgColours.colors.g, 23, 255);
+    bgColours.colors.b = constrain(bgColours.colors.b, 28, 255);
+    console.log(bgColours.colors.b);
+
+    moveBucket();
+    //Draw the tears
+    drawTear();
+    //Draw the eye
     //Draw our bucket
     drawBucket();
     //draw bucket reserve
     drawBucketReserve();
     //move the bucket with mouseX
-    moveBucket();
-    //Draw the tears
-    drawTear();
-    //Draw the eye
     drawEye();
     //Randomly move the eye
     moveEye();
     //fill up bucket
     fillBucket();
+    //Progres bar
+    bucketProgress();
     
     
 
@@ -111,7 +151,7 @@ function drawBucket() {
 function drawBucketReserve() {
     //draw inside of bucket
     push();
-    fill('blue');
+    fill(bucketReserve.colors);
     noStroke();
     rect(bucket.x + 10, height - (bucketReserve.height + 10), bucket.width - 20, bucketReserve.height);
     pop();
@@ -169,19 +209,17 @@ function drawEye() {
  * Randomly move eye
 */
 function moveEye() { 
-    // eye.x = random(100, 500);
-    // eye.y = random(50,300);
     // Set counter and randomize velocity e.i x and y
     if (eye.dCounter < eye.dTimeOut) {
         eye.dCounter++;
     } else {
-        eye.velocityX = random(-5, 5);
-        eye.velocityY = random(-5, 5);
+        eye.velocityX = random(-8, 8);
+        eye.velocityY = random(-2, 2);
         eye.dCounter = 0;
         eye.dTimeOut;
     }
     //reversing the x velocity
-    if (eye.x < 0 + 80 || eye.x > width- 80) {
+    if (eye.x < 0 + 80 || eye.x > width - 80) {
         eye.velocityX = -eye.velocityX ;
     }
     if (eye.y < 0 + 35 || eye.y > height / 2) {
@@ -197,7 +235,7 @@ function moveEye() {
 */
 function drawTear() { 
     //tearSize = random(20, 30);
-    tears.y += 2;
+    tears.y += tears.velocity;
     push();
     fill(tears.fill);
     noStroke();
@@ -206,8 +244,14 @@ function drawTear() {
     if (tears.y > height) {
         tears.y = eye.y;
         tears.x = eye.x;
+    } else {
+        // want to remove bucket fill if you miss one or two
+       // bucketReserve.height -= bucketReserve.fill;
     }
 }
+/**
+ * Fills bucket and makes background darker
+*/
 function fillBucket() {
     //const targetDistance = dist(bucket.x, bucket.y, tears.x, tears.y);
     const tearInBucketY = (tears.y > bucket.y);
@@ -215,8 +259,24 @@ function fillBucket() {
     const tearInBucketX = (tears.x > 0 + bucket.x && tears.x < bucket.x + bucket.width);
 
     if (tearInBucketY && tearInBucketX) {
-        console.log('this is true');
+        bucketReserve.height += bucketReserve.fill;
+        tears.y = eye.y;
+        tears.x = eye.x;
     }
+    bucketReserve.height = constrain(bucketReserve.height, 0, 80);
+}
+
+function bucketProgress() {
+    let progress = int(map(bucketReserve.height, 0, 80, 0, 100));
+    
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text(`How full is your bucket: ${progress}%`, width - 155, 50);
+    
+    if (bgColours.colors.r < 80 || bgColours.colors.g < 80 || bgColours.colors.b < 80) {
+        fill('white');
+    }
+
 }
 
 
