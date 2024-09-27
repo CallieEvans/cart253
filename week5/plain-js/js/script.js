@@ -2,57 +2,48 @@
  * Plain Javascripts
  * Callie Evans
  * 
- * tutorial for plain js events
+ * tutorial for plain js event handling
 */
 
 "use strict";
 
-// The traffic light
-const trafficLight = {
-    // Position and size
-    x: 200,
-    y: 200,
-    size: 100,
-    fill: "#00ff00", // Starts green
+const bg = {
+    fill: 0,
     fills: {
-        stop: "#ff0000", // Red
-        slow: "#ffbb00", // Orange
-        go: "#00ff00" // Green
+        black: '#000',
+        white:'#fff',
     },
-    delay: 1000 // How long between lights
-};
-
+    switchKey: 32,
+}
 /**
  * Create the canvas
  */
 function setup() {
     createCanvas(400, 400);
-    //start a timer and change light after (setTimeout)
-    //always add to setup so it only happens once
-    //This one starts it over again
-    setInterval(changeLight, trafficLight.delay);
+    
+    window.addEventListener('keydown', changeBG);
+
 }
 
 /**
- * Display the traffic light
+ *  Add a bg colour
  */
 function draw() {
-    background(0);
-
-    // Traffic light
-    push();
-    noStroke();
-    fill(trafficLight.fill);
-    ellipse(trafficLight.x, trafficLight.y, trafficLight.size);
-    pop();
+    background(bg.fill);
+  
 }
-
-function changeLight() {
-    if (trafficLight.fill === trafficLight.fills.go) {
-        trafficLight.fill = trafficLight.fills.slow;
-    } else if (trafficLight.fill === trafficLight.fills.slow) {
-         trafficLight.fill = trafficLight.fills.stop;
-    } else if (trafficLight.fill === trafficLight.fills.stop) {
-         trafficLight.fill = trafficLight.fills.go;
+/**
+ * switches bg
+ */
+function changeBG(event) {
+    if (event.keyCode === bg.switchKey) {
+        if (bg.fill === bg.fills.black) {
+            bg.fill = bg.fills.white;
+        } else {
+            bg.fill = bg.fills.black;
+        }
     }
 }
+
+
+
