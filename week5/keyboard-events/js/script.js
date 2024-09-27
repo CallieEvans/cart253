@@ -21,6 +21,11 @@ const ball = {
         white: "#ffffff",
         red: "#ff0000",
         blue: "#0000ff"
+    },
+    //keys to control colour
+    keys: {
+        redKey: 82,
+        blueKey: 66,
     }
 }
 
@@ -43,4 +48,22 @@ function draw() {
     fill(ball.fill);
     ellipse(ball.x, ball.y, ball.size);
     pop();
+}
+/**
+ * check if r is pressed and make ball red, if b is pressed make blue
+ */
+function keyPressed(event) {
+    if (event.keyCode === ball.keys.redKey) {
+        ball.fill = ball.fills.red;
+    } else if (event.keyCode === ball.keys.blueKey) {
+        ball.fill = ball.fills.blue;
+    }
+}
+/**
+ * check r or b is released and made it white
+ */
+function keyReleased(event) {
+    if (event.keyCode === ball.keys.redKey || event.keyCode === ball.keys.blueKey) {
+        ball.fill = ball.fills.white;
+    }
 }
