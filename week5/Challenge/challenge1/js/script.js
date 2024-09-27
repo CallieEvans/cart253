@@ -20,6 +20,7 @@ function setup() {
     createCanvas(400, 400);
     
     window.addEventListener('keydown', gameOverTrue);
+    window.addEventListener('mousemouse', gameOverTrue);
 
 }
 
@@ -67,6 +68,13 @@ function displayScore() {
 function gameOverTrue(event){
     if (event.keyCode)  {
         gameOver = true;
-     }
+    }
     
+}
+function mouseMoved(event) {
+        gameOver = true;
+}
+
+function mouseWheel(event) {
+        gameOver = true;
 }
