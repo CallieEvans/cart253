@@ -17,7 +17,10 @@ let gameOver = false;
  * Create the canvas
  */
 function setup() {
-  createCanvas(400, 400);
+    createCanvas(400, 400);
+    
+    window.addEventListener('keydown', gameOverTrue);
+
 }
 
 /**
@@ -59,4 +62,11 @@ function displayScore() {
   textAlign(CENTER, CENTER);
   text(floor(score), width/2, height/2);
   pop();
+}
+
+function gameOverTrue(event){
+    if (event.keyCode)  {
+        gameOver = true;
+     }
+    
 }
