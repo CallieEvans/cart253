@@ -20,7 +20,8 @@ function setup() {
     createCanvas(400, 400);
     
     window.addEventListener('keydown', gameOverTrue);
-    window.addEventListener("visibilitychange", gameOverTrue)
+    window.addEventListener("visibilitychange", gameOverTrue);
+    window.addEventListener("offline", gameOverTrue);
 
 }
 
@@ -66,11 +67,8 @@ function displayScore() {
 }
 
 function gameOverTrue(event){
-    if (event.keyCode)  {
-        gameOver = true;
-    }
-    
-     if (document.visibilityState === "hidden")  {
+
+     if (event) {
         gameOver = true;
     }
     
