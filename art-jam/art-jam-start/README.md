@@ -1,4 +1,4 @@
-# Template p5 Project
+# Template p5 Project (edited for Art Jam Assignment)
 
 Callie Evans
 
