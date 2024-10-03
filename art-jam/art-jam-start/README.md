@@ -1,4 +1,4 @@
-# Template p5 Project (edited for Art Jam Assignment)
+# Crying Buckets
 
 Callie Evans
 
