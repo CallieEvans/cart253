@@ -2,7 +2,7 @@
 
 Callie Evans
 
-[View this project online](URL_FOR_THE_RUNNING_PROJECT)
+[View this project online](https://callieevans.github.io/cart253/art-jam/art-jam-start/)
 
 ## Description
 
@@ -21,7 +21,3 @@ This project sourced p5 references tutorial for variables and change (to add var
 This project referenced Pippin Barrs p5 sketch on Basic States: https://editor.p5js.org/pippinbarr/sketches/cpmo2ac1V
 
 ## Attribution
-
-This bit should attribute any assets or other elements used taken from other sources. For example:
-
-The fish images were sourced from the [Creative Commons image "Georgia Aquarium Fish"](https://search.creativecommons.org/photos/96f6f770-eac1-488c-8abb-16bee7bcc874) by Mike Johnston which is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
