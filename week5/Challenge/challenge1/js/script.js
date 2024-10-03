@@ -19,12 +19,14 @@ let gameOver = false;
 function setup() {
     createCanvas(400, 400);
     
-    window.addEventListener('keydown', gameOverTrue);
-    window.addEventListener("visibilitychange", gameOverTrue);
+    document.addEventListener('keydown', gameOverTrue);
+    document.addEventListener("visibilitychange", gameOverTrue);
+  
+  // have to add window to check if its online/offline it needs to be window not document
     window.addEventListener("offline", gameOverTrue);
-    window.addEventListener("mousedown", gameOverTrue);
-    window.addEventListener("mouse", gameOverTrue);
-    window.addEventListener("wheel", gameOverTrue);
+    document.addEventListener("mousedown", gameOverTrue);
+    document.addEventListener("mousemove", gameOverTrue);
+    document.addEventListener("wheel", gameOverTrue);
 
 
 }

@@ -6,31 +6,23 @@
  * The user must use a bucket and controlled by the mouse to catch the tears and fill up the bucket. 
  * There is a percentage counter to track the progress. 
  * The sky slowly get darker over time, once the sky is black and you haven't filled your bucket it's game over.
- * 
- * add in states for an game over screen
- * 
- * If have time:
- * add function to loose percentage is you cant catch a tear
- * add a timeout, if the backgrounds reach their limits before you completely fill bucket, its game over
- * 
- * if reallyyyy have time, add another eye
+ *
  */
-
 
 "use strict";
 let state = 'game';
 
-//Set varaibles for if you win the game
+//Set variables for if you win the game
 let winGame = {
-    string: 'Yay you won',
-    bgColor: 'green'
+    string: 'Congrats, you caught all your tears',
+    bgColor: '#abdb0d'
     
 };
 
 //Set variables for if you lose the game
 let loseGame = {
-    string: 'Oops you lost',
-    bgColor: 'red'
+    string: "Oops, you've failed to fill the bucket",
+    bgColor: '#ab0e00'
     
 };
 
@@ -43,14 +35,14 @@ let bgColours = {
     },
     //Controls the amount that the background r,g,b values subtract every frame
     colorsSpeed: {
-        r: .25,
-        g: .15,
-        b: .1
+        r: .23,
+        g: .13,
+        b: .08
     },
     
 };
 
-//Set varaibles for the eye
+//Set variables for the eye
 let eye = {
     x: 100,
     y: 100,
@@ -61,12 +53,12 @@ let eye = {
     },
     velocityX: 2,
     velocityY: 2,
-    //Controls starting values to determ how mong before
+    //Controls starting values to determ how long before velocity or direction of the eye changes
     dCounter: 0,
     dTimeOut: 0,
 };
 
-//Set varaibles falling tears
+//Set variables falling tears
 let tears = {
     y: eye.y,
     x: eye.x,
@@ -76,7 +68,7 @@ let tears = {
 
 };
 
-//Set varaibles for the bucket
+//Set shape and location for the bucket
 let bucket = {
     x: 280,
     y: 509,
@@ -90,13 +82,14 @@ let bucket = {
     }
 };
 
-//Set varaibles for the bucket reserve
+//Set variables for the bucket reserve
 let bucketReserve = {
     height: 0,
     fill: 2,
+    fillDecrease:1,
     colors: '#659db5'
 };
-//Set varaible for the progress section
+//Set variable to be mapped to the buckets height (this will display the value in our progress section)
 let progress = undefined;
 
 /**
@@ -111,7 +104,7 @@ function setup() {
     
     //Display settings for text
     textAlign(CENTER, CENTER);
-    textSize(50);
+    textSize(35);
 
 }
 
@@ -133,7 +126,7 @@ function draw() {
 }
 
 /**
- * In game state, where you can play the game
+ * In game state, where game elements are drawn
 */
 function inGame() {
     
@@ -186,7 +179,7 @@ function gameWin() {
  * State that happens when you lose the game
 */
 function gameLose() {
-    //Set game background colour if you win
+    //Set game background colour if you lose
     background(loseGame.bgColor);
 
     push();
@@ -214,7 +207,7 @@ function backgroundShift() {
 /**
  * Draw the tears
 */
-function drawTear() { 
+function drawTear() {
     //tearSize = random(20, 30);
     tears.y += tears.velocity;
     push();
@@ -225,9 +218,7 @@ function drawTear() {
     if (tears.y > height) {
         tears.y = eye.y;
         tears.x = eye.x;
-    } else {
-        // want to remove bucket fill if you miss one or two
-       // bucketReserve.height -= bucketReserve.fill;
+        bucketReserve.height -= bucketReserve.fillDecrease;
     }
 }
 
@@ -371,7 +362,7 @@ function bucketProgress() {
     //Referenced p5 files, see read me.
     push();
     textAlign(CENTER, CENTER);
-    textSize(30);
+    textSize(25);
     text(`Bucket reserve: ${progress}%`, width - 155, 50);
     pop();
     
