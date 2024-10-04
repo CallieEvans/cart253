@@ -169,6 +169,9 @@ function checkTongueFlyOverlap() {
         resetFly();
         // Bring back the tongue
         frog.tongue.state = "inbound";
+        
+        makeFrogFat();
+
     }
 }
 
@@ -179,4 +182,12 @@ function mousePressed() {
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
     }
+}
+
+/**
+ * Increase frogs size when he eats a fly
+ */
+function makeFrogFat() {
+    frog.body.size += 10;
+    frog.tongue.size += 1;
 }

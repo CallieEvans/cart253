@@ -66,7 +66,13 @@ checkTongueFlyOverlap()
         Move the fly back to the left at a random y
         set the tongue state to inbound
 
+        makeFrogFat()
+
 mousePressed()
     if (tongue state is idle)
         set tongue state to outbound
 ```
+
+makeFrogFat()
+Increase frogs size by 10
+Increase tongues size by 1

@@ -1,6 +1,5 @@
 # Starting points
 
-
 Finding metro tickets on the ground and trying to sell them
 
 **Frog eating flies but it gets harder and harder to catch them**
@@ -20,5 +19,9 @@ Growing plants that eat you
 Keeping a computer mouse as a pet and looking after it
 
 Rewiring a light
-
+3
 Cooking spaghetti with a dog
+
+## score
+
+He could get bigger everytime he eats a fly
