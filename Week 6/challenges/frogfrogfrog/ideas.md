@@ -25,3 +25,15 @@ Cooking spaghetti with a dog
 ## score
 
 He could get bigger everytime he eats a fly
+
+Ideas 5:
+
+Add in a fly caught counter
+
+Every time he eats a fly he gets darker
+
+Have him start moving more slowly as he gets bigger
+
+Everytime he eats a fly have them move slightly faster
+
+Have him die when he fills up screen

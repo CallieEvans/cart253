@@ -21,7 +21,8 @@ const frog = {
     body: {
         x: 320,
         y: 520,
-        size: 150
+        size: 150,
+        color: 255,
     },
     // The frog's tongue has a position, size, speed, and state
     tongue: {
@@ -40,7 +41,8 @@ const fly = {
     x: 0,
     y: 200, // Will be random
     size: 10,
-    speed: 3
+    speed: 3,
+    counter:0
 };
 
 /**
@@ -61,6 +63,7 @@ function draw() {
     moveTongue();
     drawFrog();
     checkTongueFlyOverlap();
+    drawCounter();
 }
 
 /**
@@ -99,7 +102,9 @@ function resetFly() {
  * Moves the frog to the mouse position on x
  */
 function moveFrog() {
-    frog.body.x = mouseX;
+    if (fly.counter < 15) {
+        frog.body.x = mouseX;
+    }
 }
 
 /**
@@ -150,7 +155,7 @@ function drawFrog() {
 
     // Draw the frog's body
     push();
-    fill("#00ff00");
+    fill(0, frog.body.color, 0);
     noStroke();
     ellipse(frog.body.x, frog.body.y, frog.body.size);
     pop();
@@ -171,6 +176,10 @@ function checkTongueFlyOverlap() {
         frog.tongue.state = "inbound";
         
         makeFrogFat();
+        countOverlap();
+        slowTongueSpeedFly();
+        
+        
 
     }
 }
@@ -190,4 +199,45 @@ function mousePressed() {
 function makeFrogFat() {
     frog.body.size += 10;
     frog.tongue.size += 1;
+    
+    // make him get darker
+    frog.body.color -= 5;
+
+    
+}
+/**
+ * Draw counter function
+ */
+function drawCounter() {
+    push();
+    fill("#000");
+    textSize(25);
+    text(`Flies caught: ${fly.counter}`, 30, 50 );
+    pop();
+    
+}
+/**
+ * Increase frogs size when he eats a fly
+ */
+function countOverlap() {
+    fly.counter += 1;
+    
+    if (fly.counter === 15) {
+        frog.body.color = 0;
+        frog.tongue.state = "inbound";   
+    }
+}
+
+/**
+ * Slow down the tongue
+ */
+function slowTongueSpeedFly() {
+    //Slow tongue
+    frog.tongue.speed -= 1;
+    frog.tongue.speed = constrain(frog.tongue.speed, 8, 20);
+    
+     //speed up fly
+    fly.speed += .5;
+    fly.speed = constrain(fly.speed, 3, 10);
+    console.log(fly.speed);
 }
