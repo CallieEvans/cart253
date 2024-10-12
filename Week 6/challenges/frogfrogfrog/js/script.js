@@ -45,6 +45,8 @@ const fly = {
     counter:0
 };
 
+let state = 'title';
+
 /**
  * Creates the canvas and initializes the fly
  */
@@ -56,6 +58,21 @@ function setup() {
 }
 
 function draw() {
+    
+    if (state === 'title') {
+        title();
+    }
+    else if (state === 'game') {
+        game();
+    }
+
+}
+function title() {
+    background('green');
+    text('frogggg', 100, 100);
+}
+
+function game() {
     background("#87ceeb");
     moveFly();
     drawFly();
@@ -174,7 +191,8 @@ function checkTongueFlyOverlap() {
         resetFly();
         // Bring back the tongue
         frog.tongue.state = "inbound";
-        
+        //another way to make the frog bigger
+        frog.body.size = map(fly.counter, 0, 10, 50, 500);
         makeFrogFat();
         countOverlap();
         slowTongueSpeedFly();
@@ -188,21 +206,24 @@ function checkTongueFlyOverlap() {
  * Launch the tongue on click (if it's not launched yet)
  */
 function mousePressed() {
-    if (frog.tongue.state === "idle") {
-        frog.tongue.state = "outbound";
+    if (state === 'title') {
+        state = 'game';
     }
+    else if (state === "game") {
+        if (frog.tongue.state === "idle") {
+        frog.tongue.state = "outbound";
+    }    }
 }
 
 /**
  * Increase frogs size when he eats a fly
  */
 function makeFrogFat() {
-    frog.body.size += 10;
-    frog.tongue.size += 1;
+    // frog.body.size += 10;
+    // frog.tongue.size += 1;
     
     // make him get darker
     frog.body.color -= 5;
-
     
 }
 /**
@@ -211,8 +232,10 @@ function makeFrogFat() {
 function drawCounter() {
     push();
     fill("#000");
+    textAlign(RIGHT, TOP);
+    textStyle(BOLD);
     textSize(25);
-    text(`Flies caught: ${fly.counter}`, 30, 50 );
+    text(`Flies caught: ${fly.counter}`, width, 0 );
     pop();
     
 }
@@ -239,5 +262,4 @@ function slowTongueSpeedFly() {
      //speed up fly
     fly.speed += .5;
     fly.speed = constrain(fly.speed, 3, 10);
-    console.log(fly.speed);
 }
