@@ -19,42 +19,45 @@
 const pig = {
     // The pig's body has a position and size
     body: {
-        x: 320,
+        x: 50,
         y: 450,
         size: 100,
         colorR: 255,
         colorG: 180,
         colorB: 242,
-    },
-    head: {
-        size: 30,
-        eye: {
-            size: 15,
-            color: '#000',
-        }
+        sprite: undefined,
     },
     // The pig's tongue has a position, size, speed, and state
     tongue: {
-        x: undefined,
-        y: 480,
+        x: 0,
+        y: undefined,
         size: 10,
         speed: 20,
         // Determines how the tongue moves each frame
         state: "idle" // State can be: idle, outbound, inbound
-    }
+    },
+    velocity: 5,
 };
 
 // Our Carrot
 // Has a position, size, and speed of horizontal movement
-const carrot = {
-    x: 0,
+let carrot = {
+    x: 500,
     y: 200, // Will be random
-    size: 14,
+    size: 50,
     speed: 3,
-    counter: 0
+    counter: 0,
+    sprite: undefined
 };
 
 let state = 'title';
+
+function preload() {
+    // specify width and height of each frame and number of frames
+    carrot.sprite = loadImage("assets/images/png-carrot-01.png");
+    pig.body.sprite = loadImage('assets/images/png-pig.png');
+}
+
 
 /**
  * Creates the canvas and initializes the Carrot
@@ -86,12 +89,32 @@ function game() {
     background("#a0b577");
     moveCarrot();
     drawCarrot();
-    movePig();
     moveTongue();
     drawPig();
     checkTongueCarrotOverlap();
     drawCounter();
+
+    /**
+     * Moves the pig to the mouse position on y
+     */
+    if (keyIsPressed) {
+        if (keyCode === UP_ARROW) {
+            pig.body.y = pig.body.y - pig.velocity;
+        } else if (keyCode === DOWN_ARROW) {
+            pig.body.y = pig.body.y + pig.velocity;
+        } else
+            if (keyCode === 32) {
+                if (state === "game") {
+                    if (pig.tongue.state === "idle") {
+                        pig.tongue.state = "outbound";
+                    }
+                }
+
+            }
+
+    }
 }
+
 
 /**
  * Moves the carrot according to its speed
@@ -99,9 +122,9 @@ function game() {
  */
 function moveCarrot() {
     // Move the carrot
-    carrot.x += carrot.speed;
+    carrot.y += carrot.speed;
     // Handle the carrot going off the canvas
-    if (carrot.x > width) {
+    if (carrot.y > width) {
         resetCarrot();
     }
 }
@@ -111,9 +134,8 @@ function moveCarrot() {
  */
 function drawCarrot() {
     push();
-    noStroke();
-    fill("#ffcd6b");
-    ellipse(carrot.x, carrot.y, carrot.size);
+    imageMode(CENTER);
+    image(carrot.sprite, carrot.x, carrot.y, carrot.size, carrot.size);
     pop();
 }
 
@@ -121,42 +143,34 @@ function drawCarrot() {
  * Resets the carrot to the left with a random y
  */
 function resetCarrot() {
-    carrot.x = 0;
-    carrot.y = random(0, 300);
+    carrot.y = 0;
+    carrot.x = random(400, 600);
 }
 
-/**
- * Moves the pig to the mouse position on x
- */
-function movePig() {
-    if (carrot.counter < 15) {
-        pig.body.x = mouseX;
-    }
-}
 
 /**
  * Handles moving the tongue based on its state
  */
 function moveTongue() {
     // Tongue matches the pig's x
-    pig.tongue.x = pig.body.x;
+    pig.tongue.y = pig.body.y;
     // If the tongue is idle, it doesn't do anything
     if (pig.tongue.state === "idle") {
         // Do nothing
     }
     // If the tongue is outbound, it moves up
     else if (pig.tongue.state === "outbound") {
-        pig.tongue.y += -pig.tongue.speed;
+        pig.tongue.x += pig.tongue.speed;
         // The tongue bounces back if it hits the top
-        if (pig.tongue.y <= 0) {
+        if (pig.tongue.x >= width) {
             pig.tongue.state = "inbound";
         }
     }
     // If the tongue is inbound, it moves down
     else if (pig.tongue.state === "inbound") {
-        pig.tongue.y += pig.tongue.speed;
+        pig.tongue.x += -pig.tongue.speed;
         // The tongue stops if it hits the bottom
-        if (pig.tongue.y >= height) {
+        if (pig.tongue.x <= 0) {
             pig.tongue.state = "idle";
         }
     }
@@ -183,26 +197,31 @@ function drawPig() {
 
     // Draw the pig's body
     push();
-    fill(pig.body.colorR, pig.body.colorG, pig.body.colorB);
-    noStroke();
-    ellipse(pig.body.x, pig.body.y, pig.body.size);
+    imageMode(CENTER);
+    image(pig.body.sprite, pig.body.x, pig.body.y, pig.body.size, pig.body.size);
     pop();
+    // push();
+    // fill(pig.body.colorR, pig.body.colorG, pig.body.colorB);
+    // noStroke();
+    // ellipse(pig.body.x, pig.body.y, pig.body.size + 20, pig.body.size);
+    // ellipse(pig.body.x + 40, pig.body.y - 40, pig.body.size);
+    // pop();
 
-    // Draw the pig's heads
-    push();
-    fill(pig.body.colorR, pig.body.colorG, pig.body.colorB);
-    noStroke();
-    ellipse(pig.body.x - 25, pig.body.y - 50, pig.head.size);
-    ellipse(pig.body.x + 25, pig.body.y - 50, pig.head.size);
-    pop();
+    // // Draw the pig's heads
+    // push();
+    // fill(pig.body.colorR, pig.body.colorG, pig.body.colorB);
+    // noStroke();
+    // ellipse(pig.body.x - 25, pig.body.y - 50, pig.head.size);
+    // ellipse(pig.body.x + 25, pig.body.y - 50, pig.head.size);
+    // pop();
 
-    // Draw the pig's eyes
-    push();
-    fill('black');
-    noStroke();
-    ellipse(pig.body.x - 25, pig.body.y - 10, pig.head.eye.size);
-    ellipse(pig.body.x + 25, pig.body.y - 10, pig.head.eye.size);
-    pop();
+    // // Draw the pig's eyes
+    // push();
+    // fill('black');
+    // noStroke();
+    // ellipse(pig.body.x - 25, pig.body.y - 10, pig.head.eye.size);
+    // ellipse(pig.body.x + 25, pig.body.y - 10, pig.head.eye.size);
+    // pop();
 
 }
 
@@ -221,7 +240,6 @@ function checkTongueCarrotOverlap() {
         pig.tongue.state = "inbound";
         //another way to make the pig bigger
         pig.body.size = map(carrot.counter, 0, 100, 100, 500);
-        pig.head.size = map(carrot.counter, 0, 100, 30, 500);
         makePigFat();
         countOverlap();
         slowTongueSpeedCarrot();
