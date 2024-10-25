@@ -1,24 +1,48 @@
 /**
- * Title of Project
- * Author Name
+ * Speech :p
+ * Callie Evans
  * 
- * HOW EMBARRASSING! I HAVE NO DESCRIPTION OF MY PROJECT!
- * PLEASE REMOVE A GRADE FROM MY WORK IF IT'S GRADED!
+ * Sequential arrays
  */
 
 "use strict";
 
+//The speech
+const speech = ["Veni.", "vidi", "vici", "sensi", "malmum."];
+
+//Which sentence
+let speechIndex = 0;
+
 /**
- * OH LOOK I DIDN'T DESCRIBE SETUP!!
+ * Setup
 */
 function setup() {
+    createCanvas(400, 400);
 
 }
 
 
 /**
- * OOPS I DIDN'T DESCRIBE WHAT MY DRAW DOES!
+ * Draws
 */
 function draw() {
+    background(0);
 
+    let currentLine = speech[speechIndex];
+
+    push();
+    fill('white');
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text(currentLine, width / 2, height / 2);
+    pop();
+
+}
+
+function mousePressed(event) {
+    speechIndex = speechIndex + 1;
+
+    if (speechIndex >= speech.length) {
+        speechIndex = 0;
+    }
 }
