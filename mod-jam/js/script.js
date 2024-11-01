@@ -2,10 +2,10 @@
  * Pig never wins
  * Callie Evans
  * 
- * Use the spacebar to release pigs rope and catch as many carrots as you can.
+ * Use the spacebar to release the pig's rope and catch as many carrots as you can.
  * Be aware of the many dangers of eating too many carrots or not enough!
  * 
- * Made with p5
+ * Made with p5 and based off of Pippin Barr's frogfrogfrog game
  * https://p5js.org/
  */
 
@@ -243,6 +243,7 @@ function game() {
  * Define / draw our death screen for eating the golden carrot
  */
 function endGameGold() {
+    //Create a gold background
     background('#ffd52e');
 
     push();
@@ -262,6 +263,7 @@ function endGameGold() {
  * Define / draw our death screen for eating too many carrots
  */
 function endGameEat() {
+    //Create a orange background
     background('#ffad42');
 
     push();
@@ -280,6 +282,7 @@ function endGameEat() {
  * Define / draw our death screen for not eating enough carrots
  */
 function endGame() {
+    //Create a red background
     background('#ff551c');
 
     push();
@@ -299,6 +302,7 @@ function endGame() {
  * Draw the counter
  */
 function drawCounter() {
+    //displays counter in top right corner
     push();
     fill("#000");
     textAlign(RIGHT, TOP);
@@ -335,6 +339,7 @@ function drawHungerBar() {
  * Resets the carrot once it hits the bottom
  */
 function moveCarrot(carrot) {
+    //Randomize the carrot speed first
     carrot.speed = random(1, 10);
     // Move the carrot
     carrot.y += carrot.speed;
