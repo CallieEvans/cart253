@@ -93,8 +93,8 @@ function createCarrot() {
  * Set preload function to load and defined our images to each sprite
  */
 function preload() {
-    //create the carrots through a loop so we only create 4
-    for (let i = 0; i < 4; i++) {
+    //create the carrots through a loop so we only create 3
+    for (let i = 0; i < 3; i++) {
         const newCarrot = createCarrot();;
         carrots.push(newCarrot);
     }
@@ -500,7 +500,7 @@ function pigDying() {
 
     }
     //Check if pig ate 8 carrots
-    else if (carrotCounter >= 12) {
+    else if (carrotCounter >= 8) {
         //display died of over eating death screen
         state = 'endGameEat';
     }
