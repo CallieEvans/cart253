@@ -21,21 +21,31 @@ function setup() {
 function draw() {
     background("pink");
 
+    for (let y = 0; y <= height; y++) {
+        let shade = map(y, 0, height, 0, 255);
+        stroke(shade);
+        strokeWeight(1);
+        line(0, y, width, y);
+        shade += 1;
+    }
+
     let x = 0;
-    let y = 0;
-    let stroke = 0;
+    let strokeColour = 0;
     let strokeW = 1;
+    let strokeStep = 25;
+    let weightStep = 1;
+    let Step = 50;
 
     while (x <= width) {
-        stroke(stroke);
+
+        stroke(strokeColour);
         strokeWeight(strokeW);
-        line(x, 0, y, height);
+        line(x, 0, x, height);
 
-        x += 50;
-        y += 50;
-        stroke += 25;
-        strokeW += 1;
 
+        x += Step;
+        strokeColour += strokeStep;
+        strokeW += weightStep;
     }
 
 
