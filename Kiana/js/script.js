@@ -36,7 +36,7 @@ let BlackCat = {
     paw: {
         x: 0,
         y: 480,
-        
+
         //this is the main arm, it is a rectangle 
         rect: {
             width: 40,
@@ -51,7 +51,7 @@ let BlackCat = {
             size: 15,
         },
         speed: 20,
-    } 
+    }
 };
 
 //setting up the pixel font variable that i will use for the game hopefully
@@ -65,23 +65,23 @@ let music = undefined;
 let deathMessage = undefined;
 
 //timer 
-let timer ={
+let timer = {
     counter: 0,
 }
 
 //the ace of hearts and its counter
-let ace = { 
+let ace = {
     //image of an ace heart 
     counter: 9,
     image: undefined,
-    x: 580, 
+    x: 580,
     y: 20,
     size: 50,
 };
 
 //I use this for the movement of symhols function in sine
 // some credits to dio: https://editor.p5js.org/dio/sketches/FACyzYY0s
-let angle= 0;
+let angle = 0;
 
 // My objects which the black cat interacts with 
 //they each have an image, position, size, and speed
@@ -91,12 +91,12 @@ const ladybug = {
     lucky: true, //lucky determines if each object is going to take away or add aces
     x: 0, //this is just the starting x
     y: 200, //will be random
-    size: 100, 
+    size: 100,
     speed: 4 //lucky items are faster than unlucky ones to make it hard to win
 };
 
 const itchyfoot = {
-    image: undefined, 
+    image: undefined,
     lucky: false,
     x: -100,
     y: 300,
@@ -104,16 +104,16 @@ const itchyfoot = {
     speed: 3
 };
 
-const fish ={
+const fish = {
     image: undefined,
     lucky: true,
     x: -20,
-    y: 200, 
+    y: 200,
     size: 120,
     speed: 4
 };
 
-const rice ={
+const rice = {
     image: undefined,
     lucky: false,
     x: -50,
@@ -122,56 +122,56 @@ const rice ={
     speed: 3,
 };
 
-const wheel ={
+const wheel = {
     image: undefined,
     lucky: true,
-    x:-40,
-    y:50,
+    x: -40,
+    y: 50,
     size: 100,
     speed: 4
 };
 
-const owl ={
+const owl = {
     image: undefined,
     lucky: false,
-    x:-80,
-    y:150,
+    x: -80,
+    y: 150,
     size: 100,
     speed: 3
 };
 
-const clover ={
+const clover = {
     image: undefined,
     lucky: true,
-    x:-70,
-    y:170,
+    x: -70,
+    y: 170,
     size: 100,
     speed: 4
 };
 
-const mirror ={
+const mirror = {
     image: undefined,
     lucky: false,
-    x:-79,
-    y:60,
+    x: -79,
+    y: 60,
     size: 100,
     speed: 3
 };
 
-const horseshoeup ={
+const horseshoeup = {
     image: undefined,
     lucky: true,
-    x:-59,
-    y:60,
+    x: -59,
+    y: 60,
     size: 100,
     speed: 3
 };
 
-const horseshoedown ={
+const horseshoedown = {
     image: undefined,
     lucky: false,
-    x:-59,
-    y:60,
+    x: -59,
+    y: 60,
     size: 100,
     speed: 3
 };
@@ -196,45 +196,45 @@ const endMessages = [
 
 
 // Game state is a variable that can change and it begins with the "start"
-let gameState = "start"; 
+let gameState = "start";
 // Variable for cat bounce effect
-let bounceY = 0; 
+let bounceY = 0;
 // Direction of the bounce so it looks natural 
-let bounceDirection = 1; 
+let bounceDirection = 1;
 
 // Preloads all the images and music
 function preload() {
     // the image of BlackCat
-    BlackCat.body.image = loadImage('../assets/images/BlackCat.png'); 
+    BlackCat.body.image = loadImage('assets/images/BlackCat.png');
     // the image of the lady bug
-    ladybug.image = loadImage('../assets/images/LadyBug.png');
+    ladybug.image = loadImage('assets/images/LadyBug.png');
     // the image of the itchy foot
-    itchyfoot.image = loadImage('../assets/images/FootItch.png');
+    itchyfoot.image = loadImage('assets/images/FootItch.png');
     //the image of the ace of hearts used next to the counter
-    ace.image = loadImage('../assets/images/aceofhearts.PNG');
+    ace.image = loadImage('assets/images/aceofhearts.PNG');
     //the image of the goldfish
-    fish.image= loadImage('../assets/images/Fish.png');
+    fish.image = loadImage('assets/images/Fish.png');
     //the rice image
-    rice.image= loadImage('../assets/images/ChopsticksRice.png');
+    rice.image = loadImage('assets/images/ChopsticksRice.png');
     //the wheel image
-    wheel.image= loadImage('../assets/images/FortuneWheel.png');
+    wheel.image = loadImage('assets/images/FortuneWheel.png');
     //the owl image
-    owl.image= loadImage('../assets/images/Owl.png');
+    owl.image = loadImage('assets/images/Owl.png');
     //the four leaf clover image
-    clover.image= loadImage('../assets/images/FourLeaf.png');
+    clover.image = loadImage('assets/images/FourLeaf.png');
     //the broken mirror image
-    mirror.image= loadImage('../assets/images/Mirror.png');
+    mirror.image = loadImage('assets/images/Mirror.png');
     // image of the horseshoe facing up
-    horseshoeup.image=loadImage('../assets/images/HorseShoe.png');
+    horseshoeup.image = loadImage('assets/images/HorseShoe.png');
     //image of the horseshoe facing down 
-    horseshoedown.image=loadImage('../assets/images/HorseShoeDown.png');
-    
+    horseshoedown.image = loadImage('assets/images/HorseShoeDown.png');
+
     //preloads the music
-    music= loadSound("assets/sounds/music.mp3");
-    
+    music = loadSound("assets/sounds/music.mp3");
+
 
     //preloads the font
-    pixelFont= loadFont("assets/Jacquard_24/Jacquard24-Regular.ttf");
+    pixelFont = loadFont("assets/Jacquard_24/Jacquard24-Regular.ttf");
 }
 
 // Canvas and background
@@ -247,34 +247,34 @@ function setup() {
 //draw function and general game if statements 
 function draw() {
     // Background is in every frame so that the animation of the cat bouncing doesn't mess it up, it looked messed up at first because i didnt put this...
-    background("#AEF359"); 
+    background("#AEF359");
 
     if (gameState === "start") {
         // when the player starts the game, the display screen is shown this function is defined later
         displayStartScreen();
         // the bouncing cat animation function starts too, this continues throughout thte rest of the game also defined later
-        animateCat(); 
-    } else if (gameState=== "game"){
-        moveCat(); 
+        animateCat();
+    } else if (gameState === "game") {
+        moveCat();
         // this makes the cat moves with the mouse
         // I might want to map this later
         // need help doesnt work how I want
-        BlackCat.body.x = mouseX; 
+        BlackCat.body.x = mouseX;
         // position of the paw relative to the cat, its shifted slightly to the left
-        BlackCat.paw.x = BlackCat.body.x - 40; 
+        BlackCat.paw.x = BlackCat.body.x - 40;
 
         // Draws the ace heart 
         drawLives();
-        
+
         // draws the counter
         displayCounter();
 
         // Draws the paw
-        drawPaw(); 
+        drawPaw();
 
-        timer.counter ++; 
-        
-        
+        timer.counter++;
+
+
         //the name symbol is just a way to make sure i dont have to write 10 codes for them and can organize all the objects into these functions instead
         //if I was good at arrays Id have a symbol array instead and use randoms but I struggled with the ending screen 
         //moves all the objects whose images were described in preload
@@ -288,7 +288,7 @@ function draw() {
         moveSymbol(mirror);
         moveSymbol(horseshoeup);
         moveSymbol(horseshoedown);
-        
+
         // draws all the objects whose images were described in preload
         drawSymbol(ladybug);
         drawSymbol(itchyfoot);
@@ -314,9 +314,9 @@ function draw() {
         checkCollision(horseshoedown);
     }
 
-    else if (gameState ==="end") {
+    else if (gameState === "end") {
         displayDeathScreen();
-        }
+    }
 }
 
 // the two functions below are to draw the ace image and counter
@@ -333,9 +333,9 @@ function displayCounter() {
     fill(0); // black
 
     // Display the counter next to the heart icon
-    text(ace.counter, 
+    text(ace.counter,
         //adds the ace x
-        ace.x - ace.size + 40, 
+        ace.x - ace.size + 40,
         ace.y + ace.size / 2);
 }
 
@@ -343,9 +343,10 @@ function displayCounter() {
 function decreaseLife() {
     //if the counter is more than 0 it decreases by 1
     if (ace.counter > 0) {
-        ace.counter--;  }
+        ace.counter--;
+    }
     //if the counter is equal to zero the gameover function starts
-    else if (ace.counter === 0){
+    else if (ace.counter === 0) {
         gameOver();
     }
 }
@@ -356,9 +357,9 @@ function moveSymbol(symbol) {
     symbol.x += symbol.speed;
     // Update the y position using a sine wave
     // Sine wave's offset are based on x and y position
-    symbol.y = symbol.y + 2 * sin(angle + symbol.x * 0.02); 
+    symbol.y = symbol.y + 2 * sin(angle + symbol.x * 0.02);
     if (symbol.x > width) {
-         // If the symbol is unlucky, decrease the ace counter
+        // If the symbol is unlucky, decrease the ace counter
         if (!symbol.lucky) {
             decreaseLife(); // Reduce the counter by 1
         }
@@ -381,7 +382,7 @@ function animateCat() {
         bounceDirection *= -1; // Revere direction
     }
     // Draw the bouncing cat (lower position)
-    image(BlackCat.body.image, width / 2 - 100, height / 2 + 50 + bounceY, 200, 200); 
+    image(BlackCat.body.image, width / 2 - 100, height / 2 + 50 + bounceY, 200, 200);
 }
 
 // Cat bouncing
@@ -394,12 +395,12 @@ function moveCat() {
         bounceDirection *= -1; // Reverse direction
     }
     // Draw the bouncing cat (lower position)
-    image(BlackCat.body.image, mouseX, height / 2 + 50 + bounceY, 200, 200); 
+    image(BlackCat.body.image, mouseX, height / 2 + 50 + bounceY, 200, 200);
 }
 
 // Function to draw the paw
 function drawPaw() {
-    fill(0); 
+    fill(0);
     //rectangle for the outstretched arm
     rect(BlackCat.paw.x, mouseY, BlackCat.paw.rect.width, BlackCat.paw.rect.height);
     //circles for the hand and thumb
@@ -414,7 +415,7 @@ function displayStartScreen() {
     textFont(pixelFont);
     fill(0); // Black color
     text("Purrgatory! Your Existence and Mortality Exist by Chance", width / 2, height / 3);
-    
+
     textSize(16);
     textAlign(CENTER);
     fill(0); // Black 
@@ -431,7 +432,7 @@ function displayStartScreen() {
 }
 
 function gameOver() {
-    gameState="end";
+    gameState = "end";
     // deathMesssage = random(endMessages);
     // deathMessage= endMessages[0];
 
@@ -443,19 +444,19 @@ function gameOver() {
 //main function for the ending screen 
 
 function displayDeathScreen() {
-    background("#AEF359");  
+    background("#AEF359");
     textSize(24);
-    fill(0);  
-    textAlign(CENTER,CENTER);
+    fill(0);
+    textAlign(CENTER, CENTER);
     animateCat();
-    
+
     // Display the death message
     text(deathMessage, width / 2, height / 2);
 
     //displays the seconds you played
 
     //floor converts the calculated number into 
-    text(floor(timer.counter/60) + " seconds", 100, 50);
+    text(floor(timer.counter / 60) + " seconds", 100, 50);
 }
 
 
@@ -471,7 +472,7 @@ function checkCollision(symbol) {
         //when its lucky
         if (symbol.lucky) {
             ace.counter++; // Increase lucky ace
-        //when its unlucky    
+            //when its unlucky    
         } else {
             ace.counter--; // Decrease lucky ace
         }
@@ -492,9 +493,9 @@ function mousePressed() {
     // checks to see if the game is on start, which it is at the beginning 
     if (gameState === "start") {
         //Changes the state to play when the mouse is pressed
-        gameState = "game"; 
+        gameState = "game";
     }
-    
+
     // Plays music if it's not already playing and loops it
     if (music && !music.isPlaying()) {
         music.loop();
