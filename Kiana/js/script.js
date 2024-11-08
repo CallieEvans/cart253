@@ -230,7 +230,7 @@ function preload() {
     horseshoedown.image = loadImage('https://callieevans.github.io/cart253/Kiana/assets/images/HorseShoeDown.png');
 
     //preloads the music
-    music = loadSound("assets/sounds/music.mp3");
+    music = loadSound("https://callieevans.github.io/cart253/Kiana/assets/sounds/music.mp3");
 
 
     //preloads the font
