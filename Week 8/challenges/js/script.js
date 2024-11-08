@@ -14,10 +14,10 @@ function setup() {
     // Create the canvas
     createCanvas(400, 400);
 
-    for (let i = 0; i < 5; i++) {
-        const newBall = createBall(200, 100);
-        balls.push(newBall);
-    }
+    // for (let i = 0; i < 5; i++) {
+    //     const newBall = createBall(200, 100);
+    //     balls.push(newBall);
+    // }
 }
 
 /**
