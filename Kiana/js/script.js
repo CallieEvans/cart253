@@ -221,7 +221,7 @@ function preload() {
     //the owl image
     owl.image = loadImage('https://callieevans.github.io/cart253/Kiana/assets/images/Owl.png');
     //the four leaf clover image
-    clover.image = loadImage('https://callieevans.github.io/cart253/Kiana/assets/images/FourLeaf.png');
+    clover.image = loadImage('assets/images/FourLeaf.png');
     //the broken mirror image
     mirror.image = loadImage('https://callieevans.github.io/cart253/Kiana/assets/images/Mirror.png');
     // image of the horseshoe facing up
