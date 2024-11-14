@@ -189,19 +189,24 @@ function checkRectOverlap(platform) {
         player.y + player.height / 2 >= platform.y - platform.height / 2 &&
         player.y - player.height / 2 <= platform.y + platform.height / 2;
 
+
+
     if (overlap) {
         player.velocity.y = 0;
         player.y = player.y;
+
+        player.y = constrain(player.y, 0, platform.y - platform.height / 2 - player.height / 2);
+        player.y = constrain(player.y, 0, platform.y + platform.height / 2 + player.height / 2);
 
         if (keyIsDown(UP_ARROW)) {
             player.velocity.y = -player.jumpHeight;
 
         }
 
-        // if (player.y - player.height / 2 <= platform.y + platform.height / 2) {
-        //     player.velocity.y += gravity;
-        //     player.y = platform.y + (platform.width / 2 - player.width / 2);
-        // }
+        if (player.y - player.height / 2 <= platform.y + platform.height / 2 && !(player.y + player.height / 2 >= platform.y - platform.height / 2)) {
+            //player.velocity.y += gravity;
+            player.y = platform.y + (platform.width / 2 - player.width / 2);
+        }
         // else if (player.y + player.height / 2 > platform.y - platform.height / 2) {
         //     player.velocity.y = 0;
         //     player.y = player.y;
