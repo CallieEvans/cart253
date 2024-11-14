@@ -22,6 +22,18 @@ const player = {
         y: 1
     }
 };
+const boss = {
+    x: 0,
+    y: 300,
+    fill: 'red',
+    width: 200,
+    height: 300,
+    velocity: 2,
+    bubbleBlower: {
+        width: 25,
+        height: 50,
+    }
+};
 
 const bullets = [];
 
@@ -92,6 +104,11 @@ function draw() {
     //Move the player 
     movePlayer();
 
+    //Draw in the boss
+    drawBoss();
+
+    moveBoss();
+
 
 
 }
@@ -107,6 +124,39 @@ function drawPlayer() {
     rect(player.x, player.y, player.width, player.height);
     pop();
 
+}
+/**
+ * Draw the boss sprite
+ */
+function drawBoss() {
+    boss.x = width;
+
+    push();
+    fill(boss.fill);
+    noStroke();
+    ellipse(boss.x, boss.y, boss.width, boss.height);
+    pop();
+
+    push();
+    fill('black');
+    stroke(boss.fill);
+    strokeWeight(5);
+    ellipse(boss.x - 125, boss.y, boss.bubbleBlower.width, boss.bubbleBlower.height);
+    pop();
+
+}
+
+/**
+ * Move the boss
+ */
+function moveBoss() {
+    boss.y += boss.velocity;
+
+    if (boss.y > height - boss.height / 2) {
+        boss.velocity = -boss.velocity;
+    } else if (boss.y < 0 + boss.height / 2) {
+        boss.velocity = -boss.velocity;
+    }
 }
 
 /**
@@ -189,28 +239,26 @@ function checkRectOverlap(platform) {
         player.y + player.height / 2 >= platform.y - platform.height / 2 &&
         player.y - player.height / 2 <= platform.y + platform.height / 2;
 
-
-
     if (overlap) {
-        player.velocity.y = 0;
-        player.y = player.y;
+        // player.velocity.y = 0;
+        // player.y = player.y;
 
-        player.y = constrain(player.y, 0, platform.y - platform.height / 2 - player.height / 2);
-        player.y = constrain(player.y, 0, platform.y + platform.height / 2 + player.height / 2);
+        //check if player is in the top half of the platform and have him land
+        if (player.y + player.height / 2 >= platform.y - platform.height / 2 && player.y + player.height / 2 <= platform.y) {
+            player.y = platform.y - platform.height / 2 - player.height / 2;
+            player.velocity.y = 0;
+        }
+        //check if player is in the bottom half of the platform and have him fall to the ground
+        else if (player.y - player.height / 2 <= platform.y + platform.height / 2 && player.y + player.height / 2 >= platform.y) {
+            player.y = platform.y + platform.height / 2 + player.height / 2 + 1;
+            player.velocity.y += gravity;
+        }
 
         if (keyIsDown(UP_ARROW)) {
             player.velocity.y = -player.jumpHeight;
 
         }
 
-        if (player.y - player.height / 2 <= platform.y + platform.height / 2 && !(player.y + player.height / 2 >= platform.y - platform.height / 2)) {
-            //player.velocity.y += gravity;
-            player.y = platform.y + (platform.width / 2 - player.width / 2);
-        }
-        // else if (player.y + player.height / 2 > platform.y - platform.height / 2) {
-        //     player.velocity.y = 0;
-        //     player.y = player.y;
-        // }
     }
 
     // had some help: https://editor.p5js.org/pippinbarr/sketches/u76WBa23o
