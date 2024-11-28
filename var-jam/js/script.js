@@ -7,7 +7,7 @@
  */
 
 "use strict";
-let state = 'baseVar';
+let state = 'baseGame';
 
 const gravity = 1;
 
@@ -27,6 +27,7 @@ const player = {
         stroke: '#2227a3',
         velocity: 8,
         damage: 50,
+        freezeDamage: 150,
         offset: 100,
     }
 };
@@ -37,6 +38,7 @@ const boss = {
     width: 200,
     height: 300,
     velocity: 2,
+    resetVelocity: 2,
     bubbleBlower: {
         width: 25,
         height: 50,
@@ -101,6 +103,17 @@ const platforms = [{
 }
 ];
 
+const textBox = {
+    x: 0,
+    y: 0,
+    width: 350,
+    height: 100,
+    fill: 'white',
+    stroke: 'gray',
+    strokeW: 2,
+};
+const godDialogue = ['Welcome to "Paradise"', 'please take a look around...', 'Did you really think ', 'the human condition was... bad?', 'I wonder who tampered', 'with the bullets?', 'Have you figured it out yet?', "I'll give you one more chance...", "Take back your diginity"];
+
 
 /**
  * Create the the Canvas 
@@ -132,44 +145,38 @@ function createBullets(x, y, fill, stroke, velocity, damage) {
  * Draw 
 */
 function draw() {
-    background(0);
 
-    if (state === "baseVar") {
-        baseVar();
-    } else if (state === "varOne") {
-        varOne();
+    if (state === "baseGame") {
+        baseGame();
+    }
+    else if (state === "varShoot") {
+        varShoot();
+    }
+    else if (state === "varFreeze") {
+        varFreeze();
+    }
+    else if (state === "limboText") {
+        limboText();
+    }
+    else if (state === "varLimbo") {
+        varLimbo();
     }
 
     console.log(state);
+
 
 }
 /**
  * Base game function and base variation
  */
 
-function baseVar() {
+function baseGame() {
+    background(0);
 
-    for (let platform of platforms) {
-        //Draw in the first platform
-        drawPlatform(platform);
-        //Check if player is touching the platform
-        checkRectOverlap(platform);
-    }
-    //draw health bars
-    for (let healthBar of healthBars) {
-        //Draw boss health bar
-        drawHealthBar(healthBar);
-    }
-
-
-    //Draw the bullets
-    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
-        //draw Bullets before overlap to stop issues
-        drawBullets(bullets[bulletNum]);
-        //calculate bullet overlap
-        playerBulletOverlap(bullets[bulletNum], bulletNum);
-
-    }
+    platfromPlayerCall();
+    //Draw in the boss
+    drawBoss();
+    moveBoss();
     //Checking array backwards so splices the length correctly
     for (let bulletNum = bossBullets.length - 1; bulletNum >= 0; bulletNum--) {
         //draw Bullets before overlap to stop issues
@@ -177,35 +184,88 @@ function baseVar() {
         //calculate boss bullet overlap
         bossBulletOverlap(bossBullets[bulletNum], bulletNum);
     }
-
+    //draw health bars
+    for (let healthBar of healthBars) {
+        //Draw boss health bar
+        drawHealthBar(healthBar);
+    }
     moveBossBullets();
 
-    //Draw in our square player
-    drawPlayer();
-    //Move the player 
-    movePlayer();
+    //Draw the bullets
+    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //draw Bullets before overlap to stop issues
+        drawBullets(bullets[bulletNum]);
+        //calculate bullet overlap
+        playerBulletOverlap(bullets[bulletNum], bulletNum);
+    }
 
-    //Draw in the boss
-    drawBoss();
+    varFreezeSwitch();
 
-    moveBoss();
+}
 
-    varOneSwitch();
 
+/**
+ * player can't shoot
+ */
+
+function varShoot() {
+    baseGame();
+    platforms[0].x = random(platforms[0].x, 100, 150);
+    platforms[1].x = random(platforms[1].x, 500, 520);
+
+    boss.bullet.damage = 75;
+
+    healthBars[0].inner.width = constrain(healthBars[0].inner.width, 150, 150);
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('yellow');
+    text("I can't shoot", width / 2, 50);
+    pop();
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('yellow');
+    text('This this the end?', width / 2, height - 40);
+    pop();
+
+
+    resetHealthBars
+
+    // if (state === 'varShoot') {
+    //     if (healthBars[1].inner.width === 0) {
+    //         state = 'limboText';
+    //     }
+    // }
 }
 
 /**
  * Game variation one
  */
 
-function varOne() {
-    baseVar();
+function varFreeze() {
+    baseGame();
+
+    // platforms[0].fill = '#e1e8f7';
+    // platforms[1].fill = '#e1e8f7';
+    // boss.fill = '#e1e8f7';
+
     for (let bullet of bullets) {
         freeze(bullet);
     }
     for (let bossBullet of bossBullets) {
         freeze(bossBullet);
     }
+    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //calculate bullet overlap
+        drawBullets(bullets[bulletNum]);
+        playerBulletOverlapPlayer(bullets[bulletNum], bulletNum);
+
+    }
+    platforms[0].x = random(platforms[0].x, 180, 250);
+    platforms[1].x = random(platforms[1].x, 450, 500);
 
 }
 
@@ -213,21 +273,137 @@ function freeze(bullet) {
     push();
     textSize(20);
     textAlign(CENTER);
-    fill('white');
+    fill('red');
     text('All is fair in love and war', width / 2, 50);
     pop();
 
     push();
     textSize(20);
     textAlign(CENTER);
-    fill('white');
-    text('There are no winners', width / 2, height - 40);
+    fill('red');
+    text("I'll give you a chance...", width / 2, height - 40);
     pop();
-
 
     bullet.velocity = 0;
     boss.velocity = 0;
     bossBullets.velocity = 0;
+}
+
+function platfromPlayerCall() {
+    for (let platform of platforms) {
+        //Draw in the first platform
+        drawPlatform(platform);
+        //Check if player is touching the platform
+        checkRectOverlap(platform);
+    }
+
+    //Draw in our square player
+    drawPlayer();
+    //Move the player 
+    movePlayer();
+}
+
+/**
+ * check player bullet for himself
+ */
+
+function playerBulletOverlapPlayer(bullet, bulletNum) {
+    let overlaps = player.x + player.width / 2 >= bullet.x - bullet.size / 2 &&
+        player.x - player.width / 2 <= bullet.x + bullet.size / 2 &&
+        player.y + player.height / 2 >= bullet.y - bullet.size / 2 &&
+        player.y - player.height / 2 <= bullet.y + bullet.size / 2;
+
+    if (overlaps) {
+        healthBars[1].inner.width -= player.bullet.freezeDamage;
+        healthBars[1].inner.width = constrain(healthBars[1].inner.width, 0, 150);
+        bullets.splice(bulletNum, 1);
+
+    }
+
+
+}
+
+
+function limboText() {
+    background(0);
+    push();
+    textSize(40);
+    textAlign(CENTER);
+    fill('red');
+    text("You are now free of the virus: ", width / 2, height / 2);
+    text("the human condition", width / 2, height / 2 + 50);
+    pop();
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('white');
+    text('Killed by your own bullet...', width / 2, 50);
+    text('Will you ENTER paradise?', width / 2, height - 40);
+    pop();
+
+    if (keyIsPressed) {
+        if (keyCode === 13) {
+            state = 'varLimbo';
+        }
+    }
+}
+
+function varLimbo() {
+    background('#e1e8f7');
+
+    drawTextBox();
+    platfromPlayerCall();
+    player.fill = '#72dbb5';
+    platforms[0].fill = '#b46eff';
+    platforms[1].fill = '#e755fa';
+    platforms[0].x = random(platforms[0].x, 550, 650);
+    platforms[1].x = random(platforms[1].x, 250, 300);
+
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('gray');
+    text(`${godDialogue[0]}`, textBox.x, textBox.y - 10);
+    text(`${godDialogue[1]}`, textBox.x, textBox.y + 20);
+    pop();
+
+    if (player.x + player.width / 2 >= platforms[0].x - platforms[0].width / 2 &&
+        player.x - player.width / 2 <= platforms[0].x + platforms[0].width / 2 &&
+        player.y + player.height / 2 >= platforms[0].y - platforms[0].height / 2 &&
+        player.y - player.height / 2 <= platforms[0].y + platforms[0].height / 2) {
+        drawTextBox();
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
+        pop();
+
+    } else if (player.x + player.width / 2 >= platforms[1].x - platforms[1].width / 2 &&
+        player.x - player.width / 2 <= platforms[1].x + platforms[1].width / 2 &&
+        player.y + player.height / 2 >= platforms[1].y - platforms[1].height / 2 &&
+        player.y - player.height / 2 <= platforms[1].y + platforms[1].height / 2) {
+        drawTextBox();
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
+        pop();
+    }
+
+    // drawTextBox();
+    // push();
+    // textSize(20);
+    // textAlign(CENTER);
+    // fill('gray');
+    // text(`${godDialogue[6]}`, textBox.x, textBox.y - 10);
+    // text(`${godDialogue[7]}`, textBox.x, textBox.y + 20);
+    // pop();
 }
 
 /**
@@ -242,6 +418,7 @@ function drawPlayer() {
     pop();
 
 }
+
 /**
  * Draw the boss sprite
  */
@@ -327,6 +504,19 @@ function movePlayer() {
 
 
 }
+
+function drawTextBox() {
+    textBox.x = width / 2;
+    textBox.y = 100;
+    push();
+    stroke(textBox.stroke);
+    strokeWeight(textBox.strokeW);
+    rectMode(CENTER);
+    fill(textBox.fill);
+    rect(textBox.x, textBox.y, textBox.width, textBox.height);
+    pop();
+
+}
 /**
  * Draw the blue bullets for player
  */
@@ -365,9 +555,11 @@ function moveBossBullets() {
  * Make the player shoot bullets
  */
 function keyPressed() {
-    if (keyCode === 32) {
-        const newBullet = createBullets(player.x + player.bullet.offset, player.y, player.bullet.fill, player.bullet.stroke, player.bullet.velocity, player.bullet.damage);
-        bullets.push(newBullet);
+    if (state != 'varShoot') {
+        if (keyCode === 32) {
+            const newBullet = createBullets(player.x + player.bullet.offset, player.y, player.bullet.fill, player.bullet.stroke, player.bullet.velocity, player.bullet.damage);
+            bullets.push(newBullet);
+        }
     }
 }
 
@@ -402,12 +594,9 @@ function playerBulletOverlap(bullet, bulletNum) {
         bullets.splice(bulletNum, 1);
     }
 }
-
 /**
  * check boss bullet overlap
  */
-
-
 function bossBulletOverlap(bullet, bulletNum) {
     let overlap = player.x + player.width / 2 >= bullet.x - bullet.size / 2 &&
         player.x - player.width / 2 <= bullet.x + bullet.size / 2 &&
@@ -422,6 +611,8 @@ function bossBulletOverlap(bullet, bulletNum) {
 
     healthBars[1].inner.width = constrain(healthBars[1].inner.width, 0, 150);
 }
+
+
 
 /**
  * Calculate if the player or platform are touching and change players height accordingly
@@ -459,14 +650,25 @@ function checkRectOverlap(platform) {
 
 }
 
-// function resetHealthBars() {
-//     healthBars[0].inner.width = 150;
+function resetHealthBars() {
+    healthBars[1].inner.width = 150;
+    healthBars[0].inner.width = 150;
 
-// }
-function varOneSwitch() {
+}
+function varFreezeSwitch() {
+    if (state === 'baseGame' && (healthBars[0].inner.width === 0 || healthBars[1].inner.width === 0)) {
+        state = 'varShoot';
+        // resetHealthBars();
+    }
 
-    if (healthBars[0].inner.width === 0 || healthBars[1].inner.width === 0) {
-        state = 'varOne';
+    if (state === 'varShoot' && healthBars[1].inner.width <= 100) {
+        state = 'varFreeze';
+        // resetHealthBars();
+
+    }
+
+    if (state === 'varFreeze' && healthBars[1].inner.width === 0) {
+        state = 'limboText';
         // resetHealthBars();
     }
 }
