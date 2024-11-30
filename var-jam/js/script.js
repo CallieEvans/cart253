@@ -31,6 +31,12 @@ const player = {
         offset: 100,
     }
 };
+
+
+//Limbo player tracking variables
+let onLastPlatform = false;
+let playerOnPlatform2 = false;
+
 const boss = {
     x: 0,
     y: 300,
@@ -164,7 +170,8 @@ function draw() {
 
     console.log(state);
 
-
+    console.log('on p2');
+    console.log('on last p');
 }
 /**
  * Base game function and base variation
@@ -349,6 +356,7 @@ function limboText() {
     }
 }
 
+
 function varLimbo() {
     background('#e1e8f7');
 
@@ -361,18 +369,26 @@ function varLimbo() {
     platforms[1].x = random(platforms[1].x, 250, 300);
 
 
-    push();
-    textSize(20);
-    textAlign(CENTER);
-    fill('gray');
-    text(`${godDialogue[0]}`, textBox.x, textBox.y - 10);
-    text(`${godDialogue[1]}`, textBox.x, textBox.y + 20);
-    pop();
-
-    if (player.x + player.width / 2 >= platforms[0].x - platforms[0].width / 2 &&
+    // Check player overlap
+    let playerP1 = player.x + player.width / 2 >= platforms[0].x - platforms[0].width / 2 &&
         player.x - player.width / 2 <= platforms[0].x + platforms[0].width / 2 &&
         player.y + player.height / 2 >= platforms[0].y - platforms[0].height / 2 &&
-        player.y - player.height / 2 <= platforms[0].y + platforms[0].height / 2) {
+        player.y - player.height / 2 <= platforms[0].y + platforms[0].height / 2;
+
+    let playerP2 = player.x + player.width / 2 >= platforms[1].x - platforms[1].width / 2 &&
+        player.x - player.width / 2 <= platforms[1].x + platforms[1].width / 2 &&
+        player.y + player.height / 2 >= platforms[1].y - platforms[1].height / 2 &&
+        player.y - player.height / 2 <= platforms[1].y + platforms[1].height / 2;
+
+
+    // Had help from stack overflow to understand tracking
+    //https://stackoverflow.com/questions/56508951/how-do-i-keep-track-of-players-turn-in-game
+
+
+    // God Dialogue Messages
+    if (playerP2) {
+        playerOnPlatform2 = true;
+        onLastPlatform = true;
         drawTextBox();
         push();
         textSize(20);
@@ -381,11 +397,9 @@ function varLimbo() {
         text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
         text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
         pop();
-
-    } else if (player.x + player.width / 2 >= platforms[1].x - platforms[1].width / 2 &&
-        player.x - player.width / 2 <= platforms[1].x + platforms[1].width / 2 &&
-        player.y + player.height / 2 >= platforms[1].y - platforms[1].height / 2 &&
-        player.y - player.height / 2 <= platforms[1].y + platforms[1].height / 2) {
+    } else if (playerP1) {
+        playerOnPlatform2 = false;
+        onLastPlatform = false;
         drawTextBox();
         push();
         textSize(20);
@@ -394,17 +408,38 @@ function varLimbo() {
         text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
         text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
         pop();
-    }
+    } else if (onLastPlatform) {
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[6]}`, textBox.x, textBox.y - 20);
+        text(`${godDialogue[7]}`, textBox.x, textBox.y + 5);
+        text(`${godDialogue[8]}`, textBox.x, textBox.y + 30);
+        pop();
 
-    // drawTextBox();
-    // push();
-    // textSize(20);
-    // textAlign(CENTER);
-    // fill('gray');
-    // text(`${godDialogue[6]}`, textBox.x, textBox.y - 10);
-    // text(`${godDialogue[7]}`, textBox.x, textBox.y + 20);
-    // pop();
+        push();
+        fill('gray');
+        noStroke();
+        rectMode(CENTER);
+        rect(width - 25, height - 25, 50, 150);
+        pop();
+
+    }
+    else {
+        playerOnPlatform2 = false;
+        onLastPlatform = false;
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[0]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[1]}`, textBox.x, textBox.y + 20);
+        pop();
+    }
 }
+
+
 
 /**
  * Draw the player sprite
