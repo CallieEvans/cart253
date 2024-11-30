@@ -169,9 +169,6 @@ function draw() {
     }
 
     console.log(state);
-
-    console.log('on p2');
-    console.log('on last p');
 }
 /**
  * Base game function and base variation
@@ -239,25 +236,14 @@ function varShoot() {
     pop();
 
 
-    resetHealthBars
-
-    // if (state === 'varShoot') {
-    //     if (healthBars[1].inner.width === 0) {
-    //         state = 'limboText';
-    //     }
-    // }
 }
 
 /**
- * Game variation one
+ * Game Freeze bullets
  */
 
 function varFreeze() {
     baseGame();
-
-    // platforms[0].fill = '#e1e8f7';
-    // platforms[1].fill = '#e1e8f7';
-    // boss.fill = '#e1e8f7';
 
     for (let bullet of bullets) {
         freeze(bullet);
@@ -296,20 +282,6 @@ function freeze(bullet) {
     bossBullets.velocity = 0;
 }
 
-function platfromPlayerCall() {
-    for (let platform of platforms) {
-        //Draw in the first platform
-        drawPlatform(platform);
-        //Check if player is touching the platform
-        checkRectOverlap(platform);
-    }
-
-    //Draw in our square player
-    drawPlayer();
-    //Move the player 
-    movePlayer();
-}
-
 /**
  * check player bullet for himself
  */
@@ -327,9 +299,10 @@ function playerBulletOverlapPlayer(bullet, bulletNum) {
 
     }
 
-
 }
-
+/**
+ * Game varation limbo, title screen
+ */
 
 function limboText() {
     background(0);
@@ -355,7 +328,9 @@ function limboText() {
         }
     }
 }
-
+/**
+ * Game varation limbo
+ */
 
 function varLimbo() {
     background('#e1e8f7');
@@ -438,7 +413,22 @@ function varLimbo() {
         pop();
     }
 }
+/**
+ * Draw just the platforms and jsut the player
+ */
+function platfromPlayerCall() {
+    for (let platform of platforms) {
+        //Draw in the first platform
+        drawPlatform(platform);
+        //Check if player is touching the platform
+        checkRectOverlap(platform);
+    }
 
+    //Draw in our square player
+    drawPlayer();
+    //Move the player 
+    movePlayer();
+}
 
 
 /**
