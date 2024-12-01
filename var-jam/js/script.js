@@ -7,7 +7,7 @@
  */
 
 "use strict";
-let state = 'baseGame';
+let state = 'title';
 
 const gravity = 1;
 
@@ -29,12 +29,12 @@ const player = {
         damage: 50,
         freezeDamage: 150,
         offset: 100,
+        sound: undefined,
     }
 };
 
 
 //Limbo player tracking variables
-let onLastPlatform = false;
 let playerOnPlatform2 = false;
 
 const boss = {
@@ -68,6 +68,7 @@ const healthBars = [
         x: 620,
         y: 25,
         width: 150,
+        resetWidth: 150,
         height: 25,
         stroke: 'white',
         weight: 2,
@@ -81,6 +82,7 @@ const healthBars = [
         x: 30,
         y: 25,
         width: 150,
+        resetWidth: 150,
         height: 25,
         stroke: 'white',
         weight: 2,
@@ -120,7 +122,23 @@ const textBox = {
 };
 const godDialogue = ['Welcome to "Paradise"', 'please take a look around...', 'Did you really think ', 'the human condition was... bad?', 'I wonder who tampered', 'with the bullets?', 'Have you figured it out yet?', "I'll give you one more chance...", "Take back your diginity"];
 
+const heavensGate = {
+    x: 775,
+    y: 575,
+    fill: '#fcba03',
+    width: 50,
+    height: 150,
+}
 
+let limboSound = undefined;
+
+let gameSound = undefined;
+function preload() {
+    soundFormats('mp3', 'wav');
+    limboSound = loadSound('assets/sounds/limbo_sound.mp3');
+    player.bullet.sound = loadSound('assets/sounds/player_shoot.wav');
+    gameSound = loadSound('assets/sounds/game-sound.wav');
+}
 /**
  * Create the the Canvas 
 */
@@ -151,8 +169,13 @@ function createBullets(x, y, fill, stroke, velocity, damage) {
  * Draw 
 */
 function draw() {
-
-    if (state === "baseGame") {
+    if (state === 'title') {
+        title();
+    }
+    else if (state === 'beginGame') {
+        beginGame();
+    }
+    else if (state === "baseGame") {
         baseGame();
     }
     else if (state === "varShoot") {
@@ -166,18 +189,92 @@ function draw() {
     }
     else if (state === "varLimbo") {
         varLimbo();
+    } else if (state === "varFinal") {
+        varFinal();
+    } else if (state === 'winTitle') {
+        winTitle();
     }
 
-    console.log(state);
 }
+/**
+ * Set title state
+ */
+function title() {
+    healthBars[1].inner.width = 150;
+    background(0);
+    push();
+    textSize(50);
+    textAlign(CENTER);
+    fill('white');
+    text("Use ENTER to enter:", width / 2, height / 2);
+    pop();
+
+    push();
+    textSize(15);
+    textAlign(CENTER);
+    fill('white');
+    text("and SPACE to shoot... ARROWS to move and jump", width / 2, height / 2 + 50);
+    pop();
+
+    if (keyIsPressed) {
+        if (keyCode === 32) {
+            state = 'beginGame';
+        }
+    }
+
+
+}
+/**
+ * Set the Beginning Game State, before game play
+ */
+function beginGame() {
+
+    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //draw Bullets before overlap to stop issues
+        drawBullets(bullets[bulletNum]);
+
+    }
+    background(0);
+    platfromPlayerCall();
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('yellow');
+    text("What is this place?", width / 2, 50);
+    pop();
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('yellow');
+    text('where does this door go?', width / 2, height - 40);
+    pop();
+
+    push();
+    fill(heavensGate.fill);
+    noStroke();
+    rectMode(CENTER);
+    rect(heavensGate.x, heavensGate.y, heavensGate.width, heavensGate.height);
+    pop();
+
+    if (player.x + player.width / 2 >= heavensGate.x - heavensGate.width / 2 &&
+        player.x - player.width / 2 <= heavensGate.x + heavensGate.width / 2 &&
+        player.y + player.height / 2 >= heavensGate.y - heavensGate.height / 2 &&
+        player.y - player.height / 2 <= heavensGate.y + heavensGate.height / 2 && state === 'beginGame') {
+        state = 'baseGame';
+        gameSound.play();
+    }
+
+}
+
 /**
  * Base game function and base variation
  */
-
 function baseGame() {
     background(0);
 
     platfromPlayerCall();
+
     //Draw in the boss
     drawBoss();
     moveBoss();
@@ -203,24 +300,50 @@ function baseGame() {
         playerBulletOverlap(bullets[bulletNum], bulletNum);
     }
 
-    varFreezeSwitch();
+
+    varSwitch();
+
+}
+/**
+ * Start first variation where the players shoots freeze, and become lethal
+ */
+
+function varFreeze() {
+    baseGame();
+
+    if (state === 'varFreeze') {
+        for (let bullet of bullets) {
+            freeze(bullet);
+        }
+        for (let bossBullet of bossBullets) {
+            freeze(bossBullet);
+        }
+        for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+            //calculate bullet overlap
+            drawBullets(bullets[bulletNum]);
+            playerBulletOverlapPlayer(bullets[bulletNum], bulletNum);
+
+        }
+    }
+
+    freezePlatShift();
 
 }
 
-
 /**
- * player can't shoot
+ * Start second variation where the player can't shoot
  */
 
 function varShoot() {
     baseGame();
-    platforms[0].x = random(platforms[0].x, 100, 150);
-    platforms[1].x = random(platforms[1].x, 500, 520);
 
-    boss.bullet.damage = 75;
+    //Randomly shift the platforms, when state start
+    shootPlatShift();
 
-    healthBars[0].inner.width = constrain(healthBars[0].inner.width, 150, 150);
+    //Change the bosses bullet damage and constrain healthbar
+    shootDamage();
 
+    //Write head text
     push();
     textSize(20);
     textAlign(CENTER);
@@ -235,73 +358,10 @@ function varShoot() {
     text('This this the end?', width / 2, height - 40);
     pop();
 
-
 }
 
 /**
- * Game Freeze bullets
- */
-
-function varFreeze() {
-    baseGame();
-
-    for (let bullet of bullets) {
-        freeze(bullet);
-    }
-    for (let bossBullet of bossBullets) {
-        freeze(bossBullet);
-    }
-    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
-        //calculate bullet overlap
-        drawBullets(bullets[bulletNum]);
-        playerBulletOverlapPlayer(bullets[bulletNum], bulletNum);
-
-    }
-    platforms[0].x = random(platforms[0].x, 180, 250);
-    platforms[1].x = random(platforms[1].x, 450, 500);
-
-}
-
-function freeze(bullet) {
-    push();
-    textSize(20);
-    textAlign(CENTER);
-    fill('red');
-    text('All is fair in love and war', width / 2, 50);
-    pop();
-
-    push();
-    textSize(20);
-    textAlign(CENTER);
-    fill('red');
-    text("I'll give you a chance...", width / 2, height - 40);
-    pop();
-
-    bullet.velocity = 0;
-    boss.velocity = 0;
-    bossBullets.velocity = 0;
-}
-
-/**
- * check player bullet for himself
- */
-
-function playerBulletOverlapPlayer(bullet, bulletNum) {
-    let overlaps = player.x + player.width / 2 >= bullet.x - bullet.size / 2 &&
-        player.x - player.width / 2 <= bullet.x + bullet.size / 2 &&
-        player.y + player.height / 2 >= bullet.y - bullet.size / 2 &&
-        player.y - player.height / 2 <= bullet.y + bullet.size / 2;
-
-    if (overlaps) {
-        healthBars[1].inner.width -= player.bullet.freezeDamage;
-        healthBars[1].inner.width = constrain(healthBars[1].inner.width, 0, 150);
-        bullets.splice(bulletNum, 1);
-
-    }
-
-}
-/**
- * Game varation limbo, title screen
+ * Title page for the third variation
  */
 
 function limboText() {
@@ -322,96 +382,105 @@ function limboText() {
     text('Will you ENTER paradise?', width / 2, height - 40);
     pop();
 
+    //Switch states to limbo state
     if (keyIsPressed) {
         if (keyCode === 13) {
             state = 'varLimbo';
+            limboSound.play();
+            gameSound.stop();
         }
+
     }
 }
 /**
- * Game varation limbo
+ * Start if the third variation, a limbo-like state where the player gets one more chance to defeat the boss, after being decieved
  */
 
 function varLimbo() {
+    //Redraw bullets so they delete themselvces
+    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //draw Bullets before overlap to stop issues
+        drawBullets(bullets[bulletNum]);
+
+    }
     background('#e1e8f7');
-
+    limboVisualChanges();
     drawTextBox();
+
     platfromPlayerCall();
-    player.fill = '#72dbb5';
-    platforms[0].fill = '#b46eff';
-    platforms[1].fill = '#e755fa';
-    platforms[0].x = random(platforms[0].x, 550, 650);
-    platforms[1].x = random(platforms[1].x, 250, 300);
 
+    //Calculate door overlap
+    playerDoorOverlapLimbo();
 
-    // Check player overlap
-    let playerP1 = player.x + player.width / 2 >= platforms[0].x - platforms[0].width / 2 &&
-        player.x - player.width / 2 <= platforms[0].x + platforms[0].width / 2 &&
-        player.y + player.height / 2 >= platforms[0].y - platforms[0].height / 2 &&
-        player.y - player.height / 2 <= platforms[0].y + platforms[0].height / 2;
+    platformTextTriggers();
 
-    let playerP2 = player.x + player.width / 2 >= platforms[1].x - platforms[1].width / 2 &&
-        player.x - player.width / 2 <= platforms[1].x + platforms[1].width / 2 &&
-        player.y + player.height / 2 >= platforms[1].y - platforms[1].height / 2 &&
-        player.y - player.height / 2 <= platforms[1].y + platforms[1].height / 2;
+}
+/**
+ * Start 4th and final variation, same as the base game but the player has the upper hand and can kill the boss
+ */
+function varFinal() {
+    background(0);
 
+    finalVisualChanges();
 
-    // Had help from stack overflow to understand tracking
-    //https://stackoverflow.com/questions/56508951/how-do-i-keep-track-of-players-turn-in-game
+    platfromPlayerCall();
+    //Draw in the boss
+    drawBoss();
+    moveBoss();
+    //Checking array backwards so splices the length correctly
+    for (let bulletNum = bossBullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //draw Bullets before overlap to stop issues
+        drawBullets(bossBullets[bulletNum]);
+        //calculate boss bullet overlap
+        bossBulletOverlapFinal(bossBullets[bulletNum], bulletNum);
+    }
+    healthBars[1].inner.width = healthBars[1].resetWidth;
+    //draw health bars
+    for (let healthBar of healthBars) {
+        //Draw boss health bar
 
-
-    // God Dialogue Messages
-    if (playerP2) {
-        playerOnPlatform2 = true;
-        onLastPlatform = true;
-        drawTextBox();
-        push();
-        textSize(20);
-        textAlign(CENTER);
-        fill('gray');
-        text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
-        text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
-        pop();
-    } else if (playerP1) {
-        playerOnPlatform2 = false;
-        onLastPlatform = false;
-        drawTextBox();
-        push();
-        textSize(20);
-        textAlign(CENTER);
-        fill('gray');
-        text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
-        text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
-        pop();
-    } else if (onLastPlatform) {
-        push();
-        textSize(20);
-        textAlign(CENTER);
-        fill('gray');
-        text(`${godDialogue[6]}`, textBox.x, textBox.y - 20);
-        text(`${godDialogue[7]}`, textBox.x, textBox.y + 5);
-        text(`${godDialogue[8]}`, textBox.x, textBox.y + 30);
-        pop();
-
-        push();
-        fill('gray');
-        noStroke();
-        rectMode(CENTER);
-        rect(width - 25, height - 25, 50, 150);
-        pop();
+        drawHealthBarFinal(healthBar);
 
     }
-    else {
-        playerOnPlatform2 = false;
-        onLastPlatform = false;
-        push();
-        textSize(20);
-        textAlign(CENTER);
-        fill('gray');
-        text(`${godDialogue[0]}`, textBox.x, textBox.y - 10);
-        text(`${godDialogue[1]}`, textBox.x, textBox.y + 20);
-        pop();
+
+    moveBossBullets();
+
+    //Draw the bullets
+    for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
+        //draw Bullets before overlap to stop issues
+        drawBullets(bullets[bulletNum]);
+        //calculate bullet overlap
+        playerBulletOverlapFinal(bullets[bulletNum], bulletNum);
     }
+
+    //reset boss movements and bullets damages
+    finalResetBossMovementDamage();
+
+
+    varSwitch();
+}
+
+/**
+ * Sets the title screen for if you win
+ */
+function winTitle() {
+    background('#f2f6f7');
+    platfromPlayerCall();
+    push();
+    textSize(50);
+    textAlign(CENTER);
+    fill(0);
+    text("You've regained your dignity", width / 2, 100);
+    pop();
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill(0);
+    text("and won...", width / 2, 150);
+    pop();
+
+
 }
 /**
  * Draw just the platforms and jsut the player
@@ -530,18 +599,7 @@ function movePlayer() {
 
 }
 
-function drawTextBox() {
-    textBox.x = width / 2;
-    textBox.y = 100;
-    push();
-    stroke(textBox.stroke);
-    strokeWeight(textBox.strokeW);
-    rectMode(CENTER);
-    fill(textBox.fill);
-    rect(textBox.x, textBox.y, textBox.width, textBox.height);
-    pop();
 
-}
 /**
  * Draw the blue bullets for player
  */
@@ -569,6 +627,10 @@ function moveBossBullets() {
     } else {
         const newBullet = createBullets(boss.x, boss.y, boss.bullet.fill, boss.bullet.stroke, boss.bullet.velocity, boss.bullet.damage);
         bossBullets.push(newBullet);
+        if (state != 'varFreeze') {
+            player.bullet.sound.play();
+
+        }
 
         //Restart counter and timeout
         boss.bulletCounter = 0;
@@ -582,6 +644,9 @@ function moveBossBullets() {
 function keyPressed() {
     if (state != 'varShoot') {
         if (keyCode === 32) {
+            if (state != 'title' && state != 'beginGame' && state != 'winTitle' && state != 'varLimbo' && state != 'limboText') {
+                player.bullet.sound.play();
+            }
             const newBullet = createBullets(player.x + player.bullet.offset, player.y, player.bullet.fill, player.bullet.stroke, player.bullet.velocity, player.bullet.damage);
             bullets.push(newBullet);
         }
@@ -619,6 +684,7 @@ function playerBulletOverlap(bullet, bulletNum) {
         bullets.splice(bulletNum, 1);
     }
 }
+
 /**
  * check boss bullet overlap
  */
@@ -675,25 +741,313 @@ function checkRectOverlap(platform) {
 
 }
 
-function resetHealthBars() {
-    healthBars[1].inner.width = 150;
-    healthBars[0].inner.width = 150;
 
+
+// Variables for State one, player freeze
+
+function freeze(bullet) {
+    //Draw the head text
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('red');
+    text('All is fair in love and war', width / 2, 50);
+    pop();
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('red');
+    text("I'll give you a chance...", width / 2, height - 40);
+    pop();
+
+    //Freeze the players, and bosses bullets. A
+    bullet.velocity = 0;
+    bossBullets.velocity = 0;
+
+    //Freeze the boss
+    boss.velocity = 0;
 }
-function varFreezeSwitch() {
-    if (state === 'baseGame' && (healthBars[0].inner.width === 0 || healthBars[1].inner.width === 0)) {
-        state = 'varShoot';
-        // resetHealthBars();
+
+/**
+ * Randomly shift the platforms, when state start
+ */
+function freezePlatShift() {
+    platforms[0].x = random(platforms[0].x, 180, 250);
+    platforms[1].x = random(platforms[1].x, 450, 500);
+}
+
+/**
+ * Check player bullet overlap for himself
+ */
+
+function playerBulletOverlapPlayer(bullet, bulletNum) {
+    let overlaps = player.x + player.width / 2 >= bullet.x - bullet.size / 2 &&
+        player.x - player.width / 2 <= bullet.x + bullet.size / 2 &&
+        player.y + player.height / 2 >= bullet.y - bullet.size / 2 &&
+        player.y - player.height / 2 <= bullet.y + bullet.size / 2;
+
+    if (overlaps) {
+        healthBars[1].inner.width -= player.bullet.freezeDamage;
+        healthBars[1].inner.width = constrain(healthBars[1].inner.width, 0, 150);
+        bullets.splice(bulletNum, 1);
     }
 
-    if (state === 'varShoot' && healthBars[1].inner.width <= 100) {
+}
+
+
+// Variables for State two, player can't shoot
+
+/**
+ * Randomly shift the platforms, when state start
+ */
+function shootPlatShift() {
+    platforms[0].x = random(platforms[0].x, 100, 150);
+    platforms[1].x = random(platforms[1].x, 500, 520);
+}
+
+
+/**
+ * Change the bosses bullet damage and constrain healthbar
+ */
+function shootDamage() {
+    //Change bosses bullet damage to higher
+    boss.bullet.damage = 75;
+    //Constrain healthbar so boss cannot die from old bullets
+    healthBars[0].inner.width = constrain(healthBars[0].inner.width, 150, 150);
+
+
+}
+
+// Variables for State three, the limbo state
+
+function limboVisualChanges() {
+    player.fill = '#72dbb5';
+    platforms[0].fill = '#b46eff';
+    platforms[1].fill = '#e755fa';
+
+    //Do platform shift
+    platforms[0].x = random(platforms[0].x, 550, 650);
+    platforms[1].x = random(platforms[1].x, 250, 300);
+
+}
+
+
+function platformTextTriggers() {
+    // Check player overlap
+    let playerP1 = player.x + player.width / 2 >= platforms[0].x - platforms[0].width / 2 &&
+        player.x - player.width / 2 <= platforms[0].x + platforms[0].width / 2 &&
+        player.y + player.height / 2 >= platforms[0].y - platforms[0].height / 2 &&
+        player.y - player.height / 2 <= platforms[0].y + platforms[0].height / 2;
+
+    let playerP2 = player.x + player.width / 2 >= platforms[1].x - platforms[1].width / 2 &&
+        player.x - player.width / 2 <= platforms[1].x + platforms[1].width / 2 &&
+        player.y + player.height / 2 >= platforms[1].y - platforms[1].height / 2 &&
+        player.y - player.height / 2 <= platforms[1].y + platforms[1].height / 2;
+
+
+    // Had help from stack overflow to understand tracking
+    //https://stackoverflow.com/questions/56508951/how-do-i-keep-track-of-players-turn-in-game
+
+
+    // God Dialogue Messages
+    if (playerP2) {
+        playerOnPlatform2 = true;
+        drawTextBox();
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
+        pop();
+    } else if (playerP1) {
+        playerOnPlatform2 = false;
+        drawTextBox();
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
+        pop();
+    } else if (playerOnPlatform2) {
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[6]}`, textBox.x, textBox.y - 20);
+        text(`${godDialogue[7]}`, textBox.x, textBox.y + 5);
+        text(`${godDialogue[8]}`, textBox.x, textBox.y + 30);
+        pop();
+
+        push();
+        fill(heavensGate.fill);
+        noStroke();
+        rectMode(CENTER);
+        rect(heavensGate.x, heavensGate.y, heavensGate.width, heavensGate.height);
+        pop();
+
+    }
+    else {
+        playerOnPlatform2 = false;
+        push();
+        textSize(20);
+        textAlign(CENTER);
+        fill('gray');
+        text(`${godDialogue[0]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[1]}`, textBox.x, textBox.y + 20);
+        pop();
+    }
+
+
+
+}
+
+
+function playerDoorOverlapLimbo() {
+    if (player.x + player.width / 2 >= heavensGate.x - heavensGate.width / 2 &&
+        player.x - player.width / 2 <= heavensGate.x + heavensGate.width / 2 &&
+        player.y + player.height / 2 >= heavensGate.y - heavensGate.height / 2 &&
+        player.y - player.height / 2 <= heavensGate.y + heavensGate.height / 2 && state === 'varLimbo') {
+        state = 'varFinal'
+        limboSound.stop();
+        gameSound.play();
+    }
+
+}
+
+
+
+
+/**
+ * Draw the limbo state textbox and God orb
+ */
+function drawTextBox() {
+    textBox.x = width / 2;
+    textBox.y = 100;
+    push();
+    stroke(textBox.stroke);
+    strokeWeight(textBox.strokeW);
+    rectMode(CENTER);
+    fill(textBox.fill);
+    rect(textBox.x, textBox.y, textBox.width, textBox.height);
+    pop();
+
+}
+
+// Variables for final state, where the player can finally kill the boss
+
+/**
+ * Checking for player bullet overlap, with new healthbar width
+ */
+
+
+function finalVisualChanges() {
+    player.fill = 'yellow';
+    platforms[0].fill = 'orange';
+    platforms[1].fill = 'red';
+
+    //Small platform shift again
+    platforms[0].x = random(platforms[0].x, 250, 300);
+    platforms[1].x = random(platforms[1].x, 550, 650);
+
+}
+
+
+
+function playerBulletOverlapFinal(bullet, bulletNum) {
+    let overlaps = boss.x + boss.width / 2 >= bullet.x - bullet.size / 2 &&
+        boss.x - boss.width / 2 <= bullet.x + bullet.size / 2 &&
+        boss.y + boss.height / 2 >= bullet.y - bullet.size / 2 &&
+        boss.y - boss.height / 2 <= bullet.y + bullet.size / 2;
+
+    if (overlaps) {
+        healthBars[0].resetWidth -= bullet.damage;
+
+        healthBars[0].resetWidth = constrain(healthBars[0].resetWidth, 0, 150);
+        bullets.splice(bulletNum, 1);
+    }
+}
+
+/**
+ * Checking for boss bullet overlap, with new healthbar width
+ */
+
+function bossBulletOverlapFinal(bullet, bulletNum) {
+    let overlap = player.x + player.width / 2 >= bullet.x - bullet.size / 2 &&
+        player.x - player.width / 2 <= bullet.x + bullet.size / 2 &&
+        player.y + player.height / 2 >= bullet.y - bullet.size / 2 &&
+        player.y - player.height / 2 <= bullet.y + bullet.size / 2;
+
+    if (overlap) {
+        healthBars[1].resetWidth -= bullet.damage;
+
+        bossBullets.splice(bulletNum, 1);
+    }
+
+    healthBars[1].resetWidth = constrain(healthBars[1].resetWidth, 0, 150);
+}
+
+
+/**
+ * Redraw healthbar with updated/reset width
+ */
+function drawHealthBarFinal(healthBar) {
+    push();
+    noFill();
+    stroke(healthBar.stroke);
+    strokeWeight(healthBar.weight);
+    rect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
+    pop();
+
+    push();
+    fill(healthBar.inner.fill);
+    rect(healthBar.x, healthBar.y, healthBar.resetWidth, healthBar.inner.height);
+    pop();
+
+}
+
+
+function finalResetBossMovementDamage() {
+    //reset boss movements
+    boss.y += boss.resetVelocity;
+
+    if (boss.y > height - boss.height / 2) {
+        boss.resetVelocity = -boss.resetVelocity;
+    } else if (boss.y < 0 + boss.height / 2) {
+        boss.resetVelocity = -boss.resetVelocity;
+    }
+    boss.bullet.damage = 8;
+    player.bullet.damage = 20;
+
+}
+
+/**
+ * Game Switchers, switches between states based on healthbar level
+ */
+
+function varSwitch() {
+    if (state === 'baseGame' && healthBars[0].inner.width === 0) {
+        state = 'varShoot';
+        // resetHealthBars();
+    } else if (state === 'baseGame' && healthBars[1].inner.width === 0) {
+        state = 'title';
+    } else if (state === 'varShoot' && healthBars[1].inner.width <= 100) {
         state = 'varFreeze';
         // resetHealthBars();
 
-    }
-
-    if (state === 'varFreeze' && healthBars[1].inner.width === 0) {
+    } else if (state === 'varFreeze' && healthBars[1].inner.width === 0) {
         state = 'limboText';
         // resetHealthBars();
     }
+    else if (state === 'varFinal' && healthBars[0].resetWidth === 0) {
+        state = 'winTitle';
+        gameSound.stop();
+    }
+    else if (state === 'varFinal' && healthBars[1].inner.width === 0) {
+        state = 'title';
+
+    }
 }
+
