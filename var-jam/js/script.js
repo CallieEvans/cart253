@@ -121,7 +121,24 @@ const textBox = {
     strokeW: 2,
 };
 const godDialogue = ['Welcome to "Paradise"', 'please take a look around...', 'Did you really think ', 'the human condition was... bad?', 'I wonder who tampered', 'with the bullets?', 'Have you figured it out yet?', "I'll give you one more chance...", "Take back your diginity"];
-
+const god = {
+    fill: '#a7dceb',
+    stroke: '#005085',
+    strokeW: 3,
+    size: 50,
+    eye: {
+        fill: 0,
+        width: 15,
+        height: 30,
+    }
+}
+const hellsGate = {
+    x: 775,
+    y: 575,
+    fill: 'red',
+    width: 50,
+    height: 150,
+}
 const heavensGate = {
     x: 775,
     y: 575,
@@ -139,6 +156,8 @@ function preload() {
     player.bullet.sound = loadSound('assets/sounds/player_shoot.wav');
     gameSound = loadSound('assets/sounds/game-sound.wav');
 }
+
+
 /**
  * Create the the Canvas 
 */
@@ -195,6 +214,7 @@ function draw() {
         winTitle();
     }
 
+
 }
 /**
  * Set title state
@@ -219,6 +239,8 @@ function title() {
     if (keyIsPressed) {
         if (keyCode === 32) {
             state = 'beginGame';
+            limboSound.play();
+            limboSound.setVolume(.5);
         }
     }
 
@@ -235,34 +257,32 @@ function beginGame() {
 
     }
     background(0);
-    platfromPlayerCall();
+    platformPlayerCall();
     push();
     textSize(20);
     textAlign(CENTER);
     fill('yellow');
     text("What is this place?", width / 2, 50);
-    pop();
-
-    push();
-    textSize(20);
-    textAlign(CENTER);
-    fill('yellow');
     text('where does this door go?', width / 2, height - 40);
     pop();
 
     push();
-    fill(heavensGate.fill);
+    fill(hellsGate.fill);
     noStroke();
     rectMode(CENTER);
-    rect(heavensGate.x, heavensGate.y, heavensGate.width, heavensGate.height);
+    rect(hellsGate.x, hellsGate.y, hellsGate.width, hellsGate.height);
     pop();
 
-    if (player.x + player.width / 2 >= heavensGate.x - heavensGate.width / 2 &&
-        player.x - player.width / 2 <= heavensGate.x + heavensGate.width / 2 &&
-        player.y + player.height / 2 >= heavensGate.y - heavensGate.height / 2 &&
-        player.y - player.height / 2 <= heavensGate.y + heavensGate.height / 2 && state === 'beginGame') {
+    if (player.x + player.width / 2 >= hellsGate.x - hellsGate.width / 2 &&
+        player.x - player.width / 2 <= hellsGate.x + hellsGate.width / 2 &&
+        player.y + player.height / 2 >= hellsGate.y - hellsGate.height / 2 &&
+        player.y - player.height / 2 <= hellsGate.y + hellsGate.height / 2 && state === 'beginGame') {
         state = 'baseGame';
+        limboSound.stop();
+        gameSound.setVolume(.2);
         gameSound.play();
+
+
     }
 
 }
@@ -273,7 +293,7 @@ function beginGame() {
 function baseGame() {
     background(0);
 
-    platfromPlayerCall();
+    platformPlayerCall();
 
     //Draw in the boss
     drawBoss();
@@ -349,12 +369,6 @@ function varShoot() {
     textAlign(CENTER);
     fill('yellow');
     text("I can't shoot", width / 2, 50);
-    pop();
-
-    push();
-    textSize(20);
-    textAlign(CENTER);
-    fill('yellow');
     text('This this the end?', width / 2, height - 40);
     pop();
 
@@ -405,12 +419,10 @@ function varLimbo() {
     }
     background('#e1e8f7');
     limboVisualChanges();
+
     drawTextBox();
 
-    platfromPlayerCall();
-
-    //Calculate door overlap
-    playerDoorOverlapLimbo();
+    platformPlayerCall();
 
     platformTextTriggers();
 
@@ -419,11 +431,21 @@ function varLimbo() {
  * Start 4th and final variation, same as the base game but the player has the upper hand and can kill the boss
  */
 function varFinal() {
+
     background(0);
+
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('white');
+    text("You're undefeatable", width / 2, 50);
+    text('End Them...', width / 2, height - 40);
+    pop();
+
 
     finalVisualChanges();
 
-    platfromPlayerCall();
+    platformPlayerCall();
     //Draw in the boss
     drawBoss();
     moveBoss();
@@ -434,7 +456,7 @@ function varFinal() {
         //calculate boss bullet overlap
         bossBulletOverlapFinal(bossBullets[bulletNum], bulletNum);
     }
-    healthBars[1].inner.width = healthBars[1].resetWidth;
+
     //draw health bars
     for (let healthBar of healthBars) {
         //Draw boss health bar
@@ -457,6 +479,10 @@ function varFinal() {
     finalResetBossMovementDamage();
 
 
+
+    healthBars[1].inner.width = healthBars[1].resetWidth;
+    healthBars[1].resetWidth = constrain(healthBars[1].resetWidth, 100, 150);
+
     varSwitch();
 }
 
@@ -464,19 +490,21 @@ function varFinal() {
  * Sets the title screen for if you win
  */
 function winTitle() {
-    background('#f2f6f7');
-    platfromPlayerCall();
+    background(0);
+
+    platformPlayerCall();
+
     push();
     textSize(50);
     textAlign(CENTER);
-    fill(0);
+    fill('white');
     text("You've regained your dignity", width / 2, 100);
     pop();
 
     push();
-    textSize(20);
+    textSize(15);
     textAlign(CENTER);
-    fill(0);
+    fill('white');
     text("and won...", width / 2, 150);
     pop();
 
@@ -485,7 +513,7 @@ function winTitle() {
 /**
  * Draw just the platforms and jsut the player
  */
-function platfromPlayerCall() {
+function platformPlayerCall() {
     for (let platform of platforms) {
         //Draw in the first platform
         drawPlatform(platform);
@@ -819,6 +847,7 @@ function shootDamage() {
 
 }
 
+
 // Variables for State three, the limbo state
 
 function limboVisualChanges() {
@@ -888,6 +917,8 @@ function platformTextTriggers() {
         rect(heavensGate.x, heavensGate.y, heavensGate.width, heavensGate.height);
         pop();
 
+        playerDoorOverlapLimbo();
+
     }
     else {
         playerOnPlatform2 = false;
@@ -913,6 +944,7 @@ function playerDoorOverlapLimbo() {
         state = 'varFinal'
         limboSound.stop();
         gameSound.play();
+
     }
 
 }
@@ -932,6 +964,20 @@ function drawTextBox() {
     rectMode(CENTER);
     fill(textBox.fill);
     rect(textBox.x, textBox.y, textBox.width, textBox.height);
+    pop();
+
+    //Draw the god orb
+    push();
+    fill(god.fill);
+    stroke(god.stroke);
+    strokeWeight(god.strokeW);
+    ellipse(textBox.x + 175, textBox.y - 50, god.size);
+    pop();
+
+    push();
+    fill(god.eye.fill);
+    noStroke();
+    ellipse(textBox.x + 175, textBox.y - 50, god.eye.width, god.eye.height);
     pop();
 
 }
@@ -1039,11 +1085,16 @@ function varSwitch() {
 
     } else if (state === 'varFreeze' && healthBars[1].inner.width === 0) {
         state = 'limboText';
+        gameSound.setVolume(.08);
+
+        //Get rid of old bullets including the frozen ones
+        bossBullets.splice(0, bossBullets.length);
+        bullets.splice(0, bullets.length);
         // resetHealthBars();
     }
     else if (state === 'varFinal' && healthBars[0].resetWidth === 0) {
         state = 'winTitle';
-        gameSound.stop();
+        gameSound.setVolume(.03);
     }
     else if (state === 'varFinal' && healthBars[1].inner.width === 0) {
         state = 'title';
