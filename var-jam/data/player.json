@@ -1,0 +1,21 @@
+{
+    "x": 25,
+    "y": 575,
+    "fill": "yellow",
+    "width": 50,
+    "height": 50,
+    "jumpHeight": 20,
+    "velocity": {
+        "x": 4,
+        "y": 1
+    },
+    "bullet": {
+        "fill": "#545af7",
+        "stroke": "#2227a3",
+        "velocity": 8,
+        "damage": 50,
+        "freezeDamage": 150,
+        "offset": 100,
+        "sound": null
+    }
+}

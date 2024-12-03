@@ -12,11 +12,54 @@ let state = 'title';
 const gravity = 1;
 
 let player = undefined;
+// {
+//     x: 25,
+//     y: 575,
+//     fill: 'yellow',
+//     width: 50,
+//     height: 50,
+//     jumpHeight: 20,
+//     velocity: {
+//         x: 4,
+//         y: 1
+//     },
+//     bullet: {
+//         fill: '#545af7',
+//         stroke: '#2227a3',
+//         velocity: 8,
+//         damage: 50,
+//         freezeDamage: 150,
+//         offset: 100,
+//         sound: undefined,
+//     }
+// };
+
 
 //Limbo player tracking variables
 let playerOnPlatform2 = false;
 
 let boss = undefined;
+// {
+//     x: 0,
+//     y: 300,
+//     fill: 'red',
+//     width: 200,
+//     height: 300,
+//     velocity: 2,
+//     resetVelocity: 2,
+//     bubbleBlower: {
+//         width: 25,
+//         height: 50,
+//     },
+//     bulletTimer: 0,
+//     bulletCounter: 0,
+//     bullet: {
+//         fill: '#ff5d17',
+//         stroke: '#eb6734',
+//         velocity: -8,
+//         damage: 8,
+//     }
+// };
 
 const bossBullets = [];
 
@@ -71,19 +114,49 @@ const platforms = [{
 ];
 
 let textBox = undefined;
-
+// {
+//     x: 0,
+//         y: 0,
+//             width: 350,
+//                 height: 100,
+//                     fill: 'white',
+//                         stroke: 'gray',
+//                             strokeW: 2,
+// };
 const godDialogue = ['Welcome to "Paradise"', 'please take a look around...', 'Did you really think ', 'the human condition was... bad?', 'I wonder who tampered', 'with the bullets?', 'Have you figured it out yet?', "I'll give you one more chance...", "Take back your diginity"];
 let god = undefined;
 
+// {
+//     fill: '#a7dceb',
+//         stroke: '#005085',
+//             strokeW: 3,
+//                 size: 50,
+//                     eye: {
+//         fill: 0,
+//             width: 15,
+//                 height: 30,
+//     }
+// }
 let hellsGate = undefined;
-
+// {
+//     x: 775,
+//     y: 575,
+//     fill: 'red',
+//     width: 50,
+//     height: 150,
+// }
 let heavensGate = undefined;
+// {
+//     x: 775,
+//     y: 575,
+//     fill: '#fcba03',
+//     width: 50,
+//     height: 150,
+// }
 
 let limboSound = undefined;
 
 let gameSound = undefined;
-
-
 function preload() {
     player = loadJSON('data/player.json');
     boss = loadJSON('data/boss.json');

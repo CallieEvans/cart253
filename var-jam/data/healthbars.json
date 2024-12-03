@@ -1,0 +1,30 @@
+[
+    {
+        "x": 620,
+        "y": 25,
+        "width": 150,
+        "resetWidth": 150,
+        "height": 25,
+        "stroke": "white",
+        "weight": 2,
+        "inner": {
+            "width": 150,
+            "height": 25,
+            "fill": "#ff5d17"
+        }
+    },
+    {
+        "x": 30,
+        "y": 25,
+        "width": 150,
+        "resetWidth": 150,
+        "height": 25,
+        "stroke": "white",
+        "weight": 2,
+        "inner": {
+            "width": 150,
+            "height": 25,
+            "fill": "blue"
+        }
+    }
+]

@@ -1,0 +1,21 @@
+{
+    "x": 0,
+    "y": 300,
+    "fill": "red",
+    "width": 200,
+    "height": 300,
+    "velocity": 2,
+    "resetVelocity": 2,
+    "bubbleBlower": {
+        "width": 25,
+        "height": 50
+    },
+    "bulletTimer": 0,
+    "bulletCounter": 0,
+    "bullet": {
+        "fill": "#ff5d17",
+        "stroke": "#eb6734",
+        "velocity": -8,
+        "damage": 8
+    }
+}
