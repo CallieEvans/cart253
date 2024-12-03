@@ -13,7 +13,7 @@
         "fill": "#545af7",
         "stroke": "#2227a3",
         "velocity": 8,
-        "damage": 50,
+        "damage": 4,
         "freezeDamage": 150,
         "offset": 100,
         "sound": null

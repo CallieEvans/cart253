@@ -4,8 +4,8 @@
     "fill": "red",
     "width": 200,
     "height": 300,
-    "velocity": 2,
-    "resetVelocity": 2,
+    "velocity": 4,
+    "resetVelocity": 4,
     "bubbleBlower": {
         "width": 25,
         "height": 50

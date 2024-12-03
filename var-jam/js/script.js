@@ -73,6 +73,7 @@ const platforms = [{
 let textBox = undefined;
 
 const godDialogue = ['Welcome to "Paradise"', 'please take a look around...', 'Did you really think ', 'the human condition was... bad?', 'I wonder who tampered', 'with the bullets?', 'Have you figured it out yet?', "I'll give you one more chance...", "Take back your diginity"];
+
 let god = undefined;
 
 let hellsGate = undefined;
@@ -87,7 +88,6 @@ let gameSound = undefined;
 function preload() {
     player = loadJSON('data/player.json');
     boss = loadJSON('data/boss.json');
-
     god = loadJSON('data/god.json');
     heavensGate = loadJSON('data/heavensgate.json');
     hellsGate = loadJSON('data/hellsgate.json');
@@ -448,7 +448,7 @@ function winTitle() {
     pop();
 
     push();
-    textSize(15);
+    textSize(20);
     textAlign(CENTER);
     fill('white');
     text("and won...", width / 2, 150);
@@ -833,8 +833,8 @@ function platformTextTriggers() {
         textSize(20);
         textAlign(CENTER);
         fill('gray');
-        text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
-        text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
+        text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
         pop();
     } else if (playerP1) {
         playerOnPlatform2 = false;
@@ -843,8 +843,8 @@ function platformTextTriggers() {
         textSize(20);
         textAlign(CENTER);
         fill('gray');
-        text(`${godDialogue[4]}`, textBox.x, textBox.y - 10);
-        text(`${godDialogue[5]}`, textBox.x, textBox.y + 20);
+        text(`${godDialogue[2]}`, textBox.x, textBox.y - 10);
+        text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
         pop();
     } else if (playerOnPlatform2) {
         push();
@@ -1011,7 +1011,7 @@ function finalResetBossMovementDamage() {
         boss.resetVelocity = -boss.resetVelocity;
     }
     boss.bullet.damage = 8;
-    player.bullet.damage = 20;
+    player.bullet.damage = 4;
 
 }
 
@@ -1020,7 +1020,7 @@ function finalResetBossMovementDamage() {
  */
 
 function varSwitch() {
-    if (state === 'baseGame' && healthBars[0].inner.width === 0) {
+    if (state === 'baseGame' && healthBars[0].inner.width <= 20) {
         state = 'varShoot';
         // resetHealthBars();
     } else if (state === 'baseGame' && healthBars[1].inner.width === 0) {
