@@ -222,9 +222,9 @@ function title() {
     text("and SPACE to shoot... ARROWS to move and jump", width / 2, height / 2 + 50);
     pop();
 
-    //If space is pressed, start sound, set the volumn and go to first state
+    //If ENTER is pressed, start sound, set the volumn and go to first state
     if (keyIsPressed) {
-        if (keyCode === 32) {
+        if (keyCode === 13) {
             state = 'beginGame';
             limboSound.play();
             limboSound.setVolume(.5);
@@ -493,8 +493,17 @@ function winTitle() {
     fill('white');
     text("and won...", width / 2, 150);
     pop();
+    //Draw instruction text
+    push();
+    textSize(20);
+    textAlign(CENTER);
+    fill('white');
+    text('Do you want to start again? Then... ENTER', width / 2, height - 40);
+    pop();
     //Draws the player and the platforms, also makes player move
     platformPlayerCall();
+
+    varSwitch();
 
 }
 /**
@@ -1137,6 +1146,14 @@ function varSwitch() {
         state = 'winTitle';
         //Reduce volume
         gameSound.setVolume(.03);
+    }
+    else if (state === 'winTitle') {
+        if (keyIsPressed) {
+            //If enter key is pressed, reload the game
+            if (keyCode === 13) {
+                window.location.reload();
+            }
+        }
     }
 }
 
