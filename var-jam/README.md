@@ -6,7 +6,7 @@ Callie Evans
 
 ## Description
 
-This program contains three main characters, the player, the boss and an eye orb, God.In this game the player finds themselves in a simple rendered game where they can jump on platforms. 
+ This program contains three main characters, the player, the boss and an eye orb, God.In this game the player finds themselves in a simple rendered game where they can jump on platforms. 
  When they go through the door they start the game where they have to shoot and try to kill the boss, if they die in this stage they reset at the title screen.Once the boss is almost dead, he can rapidly regenerate and stop the player from shooting.  At this stage is the boss hits you once it throw the player into a frozen state where they can only move. Their bullets, the boss and his bullets stay frozen in the air. The catch? If you hit your frozen bullet, you get sent to limbo. Limbo a calm state where God lives, in this state there is a series of dialogue that has to be unlocked before you can move on. Once you've unlocked it all, the door will appear again and you can finally defeat the boss. In this last stage you cannot die and the only way on is to kill the boss. When this happens you end up in a state with just platforms, no door. Your only option is to stay in this state forever or to restart the game and start the loop all over again. 
  There is no way out. 
 

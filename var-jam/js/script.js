@@ -205,6 +205,7 @@ function draw() {
 function title() {
     //Reset the players health bar, if he lands at this state
     healthBars[1].inner.width = 150;
+    healthBars[0].inner.width = 150;
     //Set a black background colour
     background(0);
     //Draw the starting text
@@ -214,7 +215,7 @@ function title() {
     fill('white');
     text("Use ENTER to enter:", width / 2, height / 2);
     pop();
-    //Draw the instructions
+    //Draw the text instructions
     push();
     textSize(15);
     textAlign(CENTER);
@@ -230,9 +231,8 @@ function title() {
             limboSound.setVolume(.5);
         }
     }
-
-
 }
+
 /**
  * Set the Beginning Game State, before game play
  */
@@ -253,10 +253,8 @@ function beginGame() {
     text("What is this place?", width / 2, 50);
     text('where does this door go?', width / 2, height - 40);
     pop();
-
     //Draw both the player and the platform, also makes player move
     platformPlayerCall();
-
     //Draws the hells gate door
     drawHellsGate();
     //Calculates the player, door overlap
@@ -272,7 +270,6 @@ function baseGame() {
     background(0);
     //Draw the platforms and the player, also makes player move
     platformPlayerCall();
-
     //Draw in the boss
     drawBoss();
     //Moves the boss verricall
@@ -293,7 +290,7 @@ function baseGame() {
     //Moves the bosses bullets, and randomly shoots
     moveBossBullets();
 
-    //Draw the players bullets, again check array backwards for splicinh
+    //Draw the players bullets, again check array backwards for splicing
     for (let bulletNum = bullets.length - 1; bulletNum >= 0; bulletNum--) {
         //Draw player bullets
         drawBullets(bullets[bulletNum]);
@@ -301,14 +298,14 @@ function baseGame() {
         playerBulletOverlap(bullets[bulletNum], bulletNum);
     }
 
-    //Function that switches states depending on healthbar, health
+    //Function that switches states depending on healthbars, health
     varSwitch();
 
 }
+
 /**
  * Start first variation where the players shoots freeze, and become lethal
  */
-
 function varFreeze() {
     //Recall the base game state
     baseGame();
@@ -502,7 +499,7 @@ function winTitle() {
     pop();
     //Draws the player and the platforms, also makes player move
     platformPlayerCall();
-
+    //Function that switches states depending on healthbars, health
     varSwitch();
 
 }
@@ -534,61 +531,6 @@ function drawPlayer() {
     rect(player.x, player.y, player.width, player.height);
     pop();
 
-}
-
-/**
- * Draw the boss sprite
- */
-function drawBoss() {
-    //Set boss with to canvas width
-    boss.x = width;
-    //Draw the bosses body
-    push();
-    fill(boss.fill);
-    noStroke();
-    ellipse(boss.x, boss.y, boss.width, boss.height);
-    pop();
-    //Draw the boss gun
-    push();
-    fill('black');
-    stroke(boss.fill);
-    strokeWeight(5);
-    ellipse(boss.x - 125, boss.y, boss.bubbleBlower.width, boss.bubbleBlower.height);
-    pop();
-}
-
-/**
- * Draw the both healthbars
- */
-function drawHealthBar(healthBar) {
-    push();
-    noFill();
-    stroke(healthBar.stroke);
-    strokeWeight(healthBar.weight);
-    rect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
-    pop();
-    //Draw the inner healthbar, the part than changes
-    push();
-    fill(healthBar.inner.fill);
-    rect(healthBar.x, healthBar.y, healthBar.inner.width, healthBar.inner.height);
-    pop();
-
-}
-
-
-/**
- * Move the boss vertically
- */
-function moveBoss() {
-    //Add the bosses velocity to his y
-    boss.y += boss.velocity;
-    if (boss.y > height - boss.height / 2) {
-        //If the boss reachigns the height reverse the velocity
-        boss.velocity = -boss.velocity;
-    } else if (boss.y < 0 + boss.height / 2) {
-        //If the boss reaches the top, reverse the velocity
-        boss.velocity = -boss.velocity;
-    }
 }
 
 /**
@@ -624,45 +566,76 @@ function movePlayer() {
 }
 
 /**
- * Draw the both the bullets
+ * Draw the platform
  */
-function drawBullets(bullet) {
-    //Add the bullets velocity to its x to move horizontally
-    bullet.x += bullet.velocity;
-    //Draw the bullet
+function drawPlatform(platform) {
     push();
-    stroke(bullet.stroke);
-    strokeWeight(bullet.strokeWeight);
-    fill(bullet.fill);
-    ellipse(bullet.x, bullet.y, bullet.size);
+    fill(platform.fill);
+    noStroke();
+    rectMode(CENTER);
+    rect(platform.x, platform.y, platform.width, platform.height);
     pop();
+
 }
 
 /**
- * Draw the red bullets for boss
+ * Calculate if the player or platform are touching and change players height accordingly
  */
-function moveBossBullets() {
-    //Set delay for boss bullets
-    let timeOut = random(30, 200);
-    boss.bulletTimer = timeOut;
-    //Check if the timeout is not up
-    if (boss.bulletCounter < boss.bulletTimer) {
-        boss.bulletCounter++;
-    } else {
-        //if it is create a new boss bullet and shoot it
-        const newBullet = createBullets(boss.x, boss.y, boss.bullet.fill, boss.bullet.stroke, boss.bullet.velocity, boss.bullet.damage);
-        bossBullets.push(newBullet);
-        //Check if we are not in the frozen state
-        if (state != 'varFreeze') {
-            //If you aren't play the players sounds for his bullets
-            player.bullet.sound.play();
+function checkRectOverlap(platform) {
+    // had some help, see the README
+    //Check if player overlaps with the platforms
+    let overlap = player.x + player.width / 2 >= platform.x - platform.width / 2 &&
+        player.x - player.width / 2 <= platform.x + platform.width / 2 &&
+        player.y + player.height / 2 >= platform.y - platform.height / 2 &&
+        player.y - player.height / 2 <= platform.y + platform.height / 2;
 
+    if (overlap) {
+        //check if player is in the top half of the platform and have him land
+        if (player.y + player.height / 2 >= platform.y - platform.height / 2 && player.y + player.height / 2 <= platform.y) {
+            player.y = platform.y - platform.height / 2 - player.height / 2;
+            player.velocity.y = 0;
         }
-        //Restart counter and timeout
-        boss.bulletCounter = 0;
-        boss.bulletTimer;
+        //check if player is in the bottom half of the platform and have him fall to the ground
+        else if (player.y - player.height / 2 <= platform.y + platform.height / 2 && player.y + player.height / 2 >= platform.y) {
+            player.y = platform.y + platform.height / 2 + player.height / 2 + 1;
+            player.velocity.y += gravity;
+            player.velocity.y = 0
+        }
+        //Reset the jumping function if the overlap is happening, so he can jump again
+        if (keyIsDown(UP_ARROW) && (player.y + player.height / 2 >= platform.y - platform.height / 2 && player.y + player.height / 2 <= platform.y)) {
+            player.velocity.y = -player.jumpHeight;
+        }
     }
+}
 
+/**
+ * Draw the first door, hellsgate
+ */
+function drawHellsGate() {
+    push();
+    fill(hellsGate.fill);
+    noStroke();
+    rectMode(CENTER);
+    rect(hellsGate.x, hellsGate.y, hellsGate.width, hellsGate.height);
+    pop();
+
+}
+/**
+ * Draw the players overlap with the first door
+ */
+function hellsGateOverlap() {
+    //Check if player overlaps with hellsgate door
+    if (player.x + player.width / 2 >= hellsGate.x - hellsGate.width / 2 &&
+        player.x - player.width / 2 <= hellsGate.x + hellsGate.width / 2 &&
+        player.y + player.height / 2 >= hellsGate.y - hellsGate.height / 2 &&
+        player.y - player.height / 2 <= hellsGate.y + hellsGate.height / 2 && state === 'beginGame') {
+        //If player overlaps the door, start the game 
+        state = 'baseGame';
+        //PLay the correct sound, if overlap
+        limboSound.stop();
+        gameSound.setVolume(.2);
+        gameSound.play();
+    }
 }
 
 /**
@@ -684,17 +657,99 @@ function keyPressed() {
     }
 }
 
+/**
+ * Draw the both healthbars
+ */
+function drawHealthBar(healthBar) {
+    push();
+    noFill();
+    stroke(healthBar.stroke);
+    strokeWeight(healthBar.weight);
+    rect(healthBar.x, healthBar.y, healthBar.width, healthBar.height);
+    pop();
+    //Draw the inner healthbar, the part than changes
+    push();
+    fill(healthBar.inner.fill);
+    rect(healthBar.x, healthBar.y, healthBar.inner.width, healthBar.inner.height);
+    pop();
+
+}
 
 /**
- * Draw the platform
+ * Draw the boss sprite
  */
-function drawPlatform(platform) {
+function drawBoss() {
+    //Set boss with to canvas width
+    boss.x = width;
+    //Draw the bosses body
     push();
-    fill(platform.fill);
+    fill(boss.fill);
     noStroke();
-    rectMode(CENTER);
-    rect(platform.x, platform.y, platform.width, platform.height);
+    ellipse(boss.x, boss.y, boss.width, boss.height);
     pop();
+    //Draw the boss gun
+    push();
+    fill('black');
+    stroke(boss.fill);
+    strokeWeight(5);
+    ellipse(boss.x - 125, boss.y, boss.bubbleBlower.width, boss.bubbleBlower.height);
+    pop();
+}
+
+/**
+ * Move the boss vertically
+ */
+function moveBoss() {
+    //Add the bosses velocity to his y
+    boss.y += boss.velocity;
+    if (boss.y > height - boss.height / 2) {
+        //If the boss reachigns the height reverse the velocity
+        boss.velocity = -boss.velocity;
+    } else if (boss.y < 0 + boss.height / 2) {
+        //If the boss reaches the top, reverse the velocity
+        boss.velocity = -boss.velocity;
+    }
+}
+
+/**
+ * Draw the both the bullets
+ */
+function drawBullets(bullet) {
+    //Add the bullets velocity to its x to move horizontally
+    bullet.x += bullet.velocity;
+    //Draw the bullet
+    push();
+    stroke(bullet.stroke);
+    strokeWeight(bullet.strokeWeight);
+    fill(bullet.fill);
+    ellipse(bullet.x, bullet.y, bullet.size);
+    pop();
+}
+
+/*
+ * Move the red bullets for boss
+ */
+function moveBossBullets() {
+    //Set delay for boss bullets
+    let timeOut = random(20, 200);
+    boss.bulletTimer = timeOut;
+    //Check if the timeout is not up
+    if (boss.bulletCounter < boss.bulletTimer) {
+        boss.bulletCounter++;
+    } else {
+        //if it is create a new boss bullet and shoot it
+        const newBullet = createBullets(boss.x, boss.y, boss.bullet.fill, boss.bullet.stroke, boss.bullet.velocity, boss.bullet.damage);
+        bossBullets.push(newBullet);
+        //Check if we are not in the frozen state
+        if (state != 'varFreeze') {
+            //If you aren't play the players sounds for his bullets
+            player.bullet.sound.play();
+
+        }
+        //Restart counter and timeout
+        boss.bulletCounter = 0;
+        boss.bulletTimer;
+    }
 
 }
 
@@ -738,69 +793,6 @@ function bossBulletOverlap(bullet, bulletNum) {
         bossBullets.splice(bulletNum, 1);
     }
 }
-/**
- * Draw the first door, hellsgate
- */
-function drawHellsGate() {
-    push();
-    fill(hellsGate.fill);
-    noStroke();
-    rectMode(CENTER);
-    rect(hellsGate.x, hellsGate.y, hellsGate.width, hellsGate.height);
-    pop();
-
-}
-/**
- * Draw the players overlap with the first door
- */
-function hellsGateOverlap() {
-    //Check if player overlaps with hellsgate door
-    if (player.x + player.width / 2 >= hellsGate.x - hellsGate.width / 2 &&
-        player.x - player.width / 2 <= hellsGate.x + hellsGate.width / 2 &&
-        player.y + player.height / 2 >= hellsGate.y - hellsGate.height / 2 &&
-        player.y - player.height / 2 <= hellsGate.y + hellsGate.height / 2 && state === 'beginGame') {
-        //If player overlaps the door, start the game 
-        state = 'baseGame';
-        //PLay the correct sound, if overlap
-        limboSound.stop();
-        gameSound.setVolume(.2);
-        gameSound.play();
-    }
-}
-
-/**
- * Calculate if the player or platform are touching and change players height accordingly
- */
-function checkRectOverlap(platform) {
-    //Check if player overlaps with the platforms
-    let overlap = player.x + player.width / 2 >= platform.x - platform.width / 2 &&
-        player.x - player.width / 2 <= platform.x + platform.width / 2 &&
-        player.y + player.height / 2 >= platform.y - platform.height / 2 &&
-        player.y - player.height / 2 <= platform.y + platform.height / 2;
-
-    if (overlap) {
-        //check if player is in the top half of the platform and have him land
-        if (player.y + player.height / 2 >= platform.y - platform.height / 2 && player.y + player.height / 2 <= platform.y) {
-            player.y = platform.y - platform.height / 2 - player.height / 2;
-            player.velocity.y = 0;
-        }
-        //check if player is in the bottom half of the platform and have him fall to the ground
-        else if (player.y - player.height / 2 <= platform.y + platform.height / 2 && player.y + player.height / 2 >= platform.y) {
-            player.y = platform.y + platform.height / 2 + player.height / 2 + 1;
-            player.velocity.y += gravity;
-            player.velocity.y = 0
-        }
-        //Reset the jumping function if the overlap is happening, so he can jump again
-        if (keyIsDown(UP_ARROW) && (player.y + player.height / 2 >= platform.y - platform.height / 2 && player.y + player.height / 2 <= platform.y)) {
-            player.velocity.y = -player.jumpHeight;
-        }
-
-    }
-
-    // had some help, see README
-
-}
-
 
 
 // Variables for State one, player freeze
@@ -1129,6 +1121,7 @@ function varSwitch() {
     } else if (state === 'baseGame' && healthBars[1].inner.width === 0) {
         //If player is dead and in basegame, switch to title screen
         state = 'title';
+        gameSound.stop();
     } else if (state === 'varShoot' && healthBars[1].inner.width <= 100) {
         //If players health is down just a bit, switch to frozen state (if it shoot state)
         state = 'varFreeze';
