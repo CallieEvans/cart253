@@ -911,7 +911,7 @@ function platformTextTriggers() {
 
     // God Dialogue Messages
     if (playerP2) {
-        //Set variable to true is on the seocnd platform
+        //Set variable to true is on the second platform
         playerOnPlatform2 = true;
         //Displays text box with third dialogue
         drawTextBox();
@@ -935,7 +935,7 @@ function platformTextTriggers() {
         text(`${godDialogue[3]}`, textBox.x, textBox.y + 20);
         pop();
     } else if (playerOnPlatform2) {
-        //If player was on playerform two display the last text
+        //If player was on platform two display the last text
         push();
         textSize(20);
         textAlign(CENTER);
